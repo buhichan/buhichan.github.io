@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Loading...</h1>
+    <script type="module">
+        const params = new URLSearchParams(location.search)
+        import marked from "https://dev.jspm.io/marked"
+        fetch("/articles/"+params.get('article')+".md").then(x=>x.text()).then(text=>{
+            document.body.innerHTML = marked(text)
+        })
+    </script>
+</body>
+</html>

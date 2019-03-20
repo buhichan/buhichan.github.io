@@ -1,0 +1,3 @@
+[submodule "rehooker-schema-form"]
+	path = rehooker-schema-form
+	url = git@github.com:buhichan/rehooker-schema-form.git

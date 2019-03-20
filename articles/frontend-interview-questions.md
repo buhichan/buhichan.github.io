@@ -24,10 +24,11 @@
     - 如何在事件冒泡过程中阻止事件冒泡 (5分)
     - script标签放在html的那个部分最好为什么, 有什么替代方法 (5 分)
 - js的题目(时间够)
+    - 最简单: 实现shallowClone
     - 简单: 实现deepClone
     - 中等: 加油问题 https://leetcode-cn.com/problems/minimum-number-of-refueling-stops/description/
     - 困难: https://leetcode.com/problems/ipo/description/ (20分)
-    <!-- ```js
+    ```js
         var findMaximizedCapital = function(k, W, Profits, Capital) {
             const indexes = Profits.map((_,i)=>i).sort((ia,ib)=>Profits[ib]-Profits[ia])
             while(k>0){
@@ -40,7 +41,7 @@
             }
             return W
         }
-    ``` -->
+    ```
 
 # 问题
 没有由浅入深

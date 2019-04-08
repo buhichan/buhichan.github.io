@@ -113,7 +113,7 @@ function outputMoonphaseText(matrix:string[][],width:number,height:number,scale=
     output(matrix.map(x=>x.join("")).join("\n"),width,height,scale)
 }
 
-function getMoonphaseText(canvas:HTMLCanvasElement, pixelSize){
+function getMoonphaseText(canvas:HTMLCanvasElement, pixelSize:number){
     const width = canvas.clientWidth
     const height = canvas.clientHeight
     const w = width / pixelSize

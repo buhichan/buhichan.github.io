@@ -12,7 +12,7 @@ function getMoonphaseChar(matrix, x, y) {
     const middleBrightness = (matrix[x + 1][y] + matrix[x + 1][y + 1] + matrix[x + 1][y + 2]) / 3;
     const rightBrightness = (matrix[x + 2][y] + matrix[x + 2][y + 1] + matrix[x + 2][y + 2]) / 3;
     if (leftBrightness < 0.5) {
-        if (middleBrightness >= 0.7) {
+        if (middleBrightness >= 0.5) {
             return "🌔";
         }
         else if (middleBrightness > 0.5) {
@@ -29,7 +29,7 @@ function getMoonphaseChar(matrix, x, y) {
         if (middleBrightness < 0.5) {
             return "🌘";
         }
-        else if (middleBrightness < 0.7) {
+        else if (middleBrightness < 0.5) {
             return "🌗";
         }
         else {
@@ -60,13 +60,13 @@ function initTextToMoonphase() {
         let fontSize = 20;
         fontSizeEl && (fontSize = Number(fontSizeEl.value));
         canvas.width = fontSize;
-        canvas.height = text.length * (fontSize + 2);
+        canvas.height = text.length * (fontSize);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#ffffff";
         ctx.font = fontSize + "px Arial";
-        ctx.textBaseline = "bottom";
+        ctx.textBaseline = "top";
         for (let i = 0; i < text.length; i++) {
-            ctx.fillText(text[i], 0, (fontSize + 2) * (i + 1));
+            ctx.fillText(text[i], 0, (fontSize) * i);
         }
         const matrix = getMoonphaseText(canvas, 1);
         outputMoonphaseText(matrix, canvas.width * 10, canvas.height * 10, 1);

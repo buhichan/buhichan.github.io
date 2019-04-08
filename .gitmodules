@@ -1,3 +1,6 @@
 [submodule "rehooker-schema-form"]
 	path = rehooker-schema-form
 	url = https://github.com/buhichan/rehooker-schema-form.git
+[submodule "moonphase-painter"]
+	path = moonphase-painter
+	url = ./moonphase-painter/

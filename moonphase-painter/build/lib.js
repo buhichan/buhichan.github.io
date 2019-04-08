@@ -60,13 +60,13 @@ function initTextToMoonphase() {
         let fontSize = 20;
         fontSizeEl && (fontSize = Number(fontSizeEl.value));
         canvas.width = fontSize;
-        canvas.height = text.length * fontSize;
+        canvas.height = text.length * (fontSize + 2);
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "#ffffff";
         ctx.font = fontSize + "px Arial";
         ctx.textBaseline = "bottom";
         for (let i = 0; i < text.length; i++) {
-            ctx.fillText(text[i], 0, fontSize * (i + 1));
+            ctx.fillText(text[i], 0, (fontSize + 2) * (i + 1));
         }
         const matrix = getMoonphaseText(canvas, 1);
         outputMoonphaseText(matrix, canvas.width * 10, canvas.height * 10, 1);

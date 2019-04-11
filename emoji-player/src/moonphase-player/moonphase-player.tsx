@@ -149,8 +149,8 @@ function getFrames(file:File, commands:string[]){
     readFile(file).then((data)=>{
         var testData = new Uint8Array(data)
         let ffmpeg = 
-            subtype === 'webm' ? new Worker("node_modules/ffmpeg.js/ffmpeg-worker-webm.js") : 
-            subtype === 'mp4' ? new Worker("node_modules/ffmpeg.js/ffmpeg-worker-mp4.js") : 
+            subtype === 'webm' ? new Worker("nm/ffmpeg.js/ffmpeg-worker-webm.js") : 
+            subtype === 'mp4' ? new Worker("nm/ffmpeg.js/ffmpeg-worker-mp4.js") : 
             null
         if(!ffmpeg){
             return []

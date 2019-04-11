@@ -39,7 +39,7 @@ module.exports = {
                 to:"node_modules/ffmpeg.js/ffmpeg-worker-mp4.js"
             },{
                 from:"./node_modules/ffmpeg.js/ffmpeg-worker-webm.js",
-                to:"node_modules/ffmpeg.js/ffmpeg-worker-webm.js"
+                to:"nm/ffmpeg.js/ffmpeg-worker-webm.js"
             },{
                 from:"./assets",
                 to:"assets"

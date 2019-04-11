@@ -1,12 +1,6 @@
 [submodule "rehooker-schema-form"]
 	path = rehooker-schema-form
 	url = https://github.com/buhichan/rehooker-schema-form.git
-[submodule "moonphase-painter"]
-	path = moonphase-painter
-	url = ./moonphase-painter/
 [submodule "react-infinite-virtual-scroll"]
 	path = react-infinite-virtual-scroll
 	url = https://github.com/buhichan/react-infinite-virtual-scroll.git
-[submodule "emoji-player"]
-	path = emoji-player
-	url = ./emoji-player/

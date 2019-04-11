@@ -1,0 +1,17 @@
+{
+    "compilerOptions": {
+        "sourceMap": true,
+        "target": "esnext",
+        "module": "esnext",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "lib": [
+            "scripthost",
+            "dom",
+            "esnext"
+        ],
+        "allowJs": true,
+        "keyofStringsOnly": true,
+        "outDir": "build"
+    }
+}

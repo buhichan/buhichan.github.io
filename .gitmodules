@@ -7,3 +7,6 @@
 [submodule "react-infinite-virtual-scroll"]
 	path = react-infinite-virtual-scroll
 	url = https://github.com/buhichan/react-infinite-virtual-scroll.git
+[submodule "webvideo_experiments"]
+	path = webvideo_experiments
+	url = ./webvideo_experiments/

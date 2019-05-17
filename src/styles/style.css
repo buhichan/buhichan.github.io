@@ -1,0 +1,52 @@
+
+:root{
+    --topbar-height: 58px;
+    --sidebar-width: 240px;
+}
+
+header {
+    position:fixed;
+    left:0;
+    right:0;
+    height: var(--topbar-height);
+    line-height: var(--topbar-height);
+    background: #490;
+    color: #fff;
+    padding-left: 20px;
+}
+
+#content{
+    position:fixed;
+    top:var(--topbar-height);
+    height:100vh;
+    right:0;
+    overflow:auto;
+    left: var(--sidebar-width);
+}
+
+#sidebar{
+    top: var(--topbar-height);
+    position: fixed; 
+    left: 0;
+    width: var(--sidebar-width);
+    height: 100vh;
+}
+
+footer {
+    position: fixed;
+    bottom:0;
+    width:100vh;
+    opacity: 0.1;
+}
+
+
+
+ul {
+    margin: 0;
+    padding-left: 10px;
+}
+
+#sidebar li {
+    display:block;
+    margin: 8px 0;
+}

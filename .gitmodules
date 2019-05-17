@@ -1,6 +1,0 @@
-[submodule "rehooker-schema-form"]
-	path = rehooker-schema-form
-	url = https://github.com/buhichan/rehooker-schema-form.git
-[submodule "react-infinite-virtual-scroll"]
-	path = react-infinite-virtual-scroll
-	url = https://github.com/buhichan/react-infinite-virtual-scroll.git

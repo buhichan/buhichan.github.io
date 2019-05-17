@@ -2,6 +2,7 @@ const webpack = require("webpack")
 const path = require("path")
 // const CopyWebpackPlugin = require("copy-webpack-plugin")
 const app = require('express')()
+const serveStatic = require('serve-static')
 // const HTMLWebpackPlugin = require("html-webpack-plugin")
 
 const compiler = webpack({
@@ -9,8 +10,8 @@ const compiler = webpack({
     output:{
         path:path.resolve("./"),
         publicPath:"/",
-        filename: process.env.NODE_ENV === 'development' ? "[name].js":"[name].[chunkhash].js",
-        chunkFilename: process.env.NODE_ENV === 'development' ?"[name].js": '[name].js'
+        filename: "[name].js",
+        chunkFilename: '[name].js'
     },
     entry:{
         main:[
@@ -72,16 +73,13 @@ if(process.env.NODE_ENV === "production"){
     app.use(webpackDevMiddleware);
     app.use(webpackHotMiddleware(compiler));
 
-    app.get('*', function(req, res) {
-        const indexPath = path.resolve("index.html")
-        if(webpackDevMiddleware.fileSystem.existsSync(indexPath)){
-            const index = webpackDevMiddleware.fileSystem.readFileSync(indexPath); 
-            // res.set({'Content-Length':1000*1000})
-            res.end(index);
-        }else{
-            res.end(webpackDevMiddleware.fileSystem.readdirSync(path.resolve(".")))
-        }
-        // res.connection.end();
+    app.use(serveStatic("."))
+
+    app.use(function(req, res, next) {
+        if(!req.path.match(/\.[a-z]{3,6}$/)){
+            res.sendFile(path.resolve("./index.html"))
+        }else
+            next()
     })
     
     app.listen(8093,"::",()=>{

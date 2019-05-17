@@ -6,6 +6,7 @@
   "author": "buhi <yinshang1992@gmail.com>",
   "license": "MIT",
   "devDependencies": {
+    "@types/history": "^4.7.2",
     "@types/node": "^12.0.2",
     "@types/react": "^16.8.17",
     "antd": "^3.18.1",
@@ -23,6 +24,7 @@
     "react-infinite-virtual-scroll": "buhichan/react-infinite-virtual-scroll",
     "rehooker": "buhichan/rehooker",
     "rehooker-schema-form": "buhichan/rehooker-schema-form",
+    "serve-static": "^1.14.1",
     "style-loader": "^0.23.1",
     "typescript": "^3.4.5",
     "webpack": "^4.31.0",

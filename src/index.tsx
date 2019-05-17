@@ -1,6 +1,6 @@
 
 import * as React from "react"
-import { Route,history } from "./services/router";
+import { Route,history, Anchor } from "./services/router";
 const ReactDOM = require('react-dom')
 import "./styles/style.css"
 
@@ -41,7 +41,7 @@ function renderRoutes(routes:IRoute[]){
         return <Route key={x.path} path={x.path === "/" ? /^\/$/: new RegExp(x.path)}>
             {(matchs)=>import("./routes"+x.path).then(({default:Comp})=>{
                 return <>
-                    <Comp params={Array.from(matchs || [])} />
+                    <Comp />
                     {x.children ? renderRoutes(x.children) : null}
                 </>
             })}
@@ -54,10 +54,7 @@ function renderMenu(routes:IRoute[]){
         {
             routes.map(route=>{
                 return <li key={route.path}>
-                    <a href={route.path} onClick={e=>{
-                        e.preventDefault()
-                        history.push(route.path)
-                    }}>{route.name}</a>
+                    <Anchor href={route.path}>{route.name}</Anchor>
                     {route.children ? renderMenu(route.children) : null}
                 </li>
             })

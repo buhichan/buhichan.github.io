@@ -1,13 +1,17 @@
 import * as React from "react"
+import {ArticleList} from "./article/article-list"
+import { Anchor } from "../services/router";
 
 export default function (){
     return <>
         <section>
             <h2>一些文章</h2>
             <ul>
-                <li><a href="/article.html?article=etag-caching-of-restful-api">使用E-Tag进行API的缓存</a></li>
-                <li><a href="/article.html?article=how-to-make-an-ipfs-static-site">如何把一个静态网站放到IPFS上</a></li>
-                <li><a href="/article.html?article=frontend-interview-questions">我用过的面试题</a></li>
+                {
+                    Object.keys(ArticleList).map(x=>{
+                        return <li key={x}><Anchor href={"/article?article="+x}>{ArticleList[x]}</Anchor></li>
+                    })
+                }
             </ul>
         </section>
         <section>
@@ -26,7 +30,7 @@ export default function (){
                             <a href="https://github.com/buhichan/rehooker-schema-form">一个react表单组件</a>
                         </h3>
                         <p>支持表单项之间动态复杂的依赖关系</p>
-                        <a href="/schema-form-demo/">demo</a>
+                        <Anchor href="/schema-form-demo/">demo</Anchor>
                     </li>
                     <li>
                         <h3>  
@@ -36,7 +40,7 @@ export default function (){
                     </li>
                     <li>
                         <h3>  
-                            <a href="/virtual-scroll-demo/">无限滚动虚拟化列表</a>
+                            <Anchor href="/virtual-scroll-demo/">无限滚动虚拟化列表</Anchor>
                         </h3>
                         <p>一个利用异步iterable的无限滚动虚拟化列表</p>
                     </li>
@@ -48,13 +52,13 @@ export default function (){
             <ul>
                 <li>
                     <h3>  
-                        <a href="/moonphase-painter/index.html">月球文翻译器</a>
+                        <Anchor href="/moonphase-painter/index.html">月球文翻译器</Anchor>
                     </h3>
                     <p>一个月球文翻译器</p>
                 </li>
                 <li>
                     <h3>  
-                        <a href="/emoji-player/build/">Emoji播放器</a>
+                        <Anchor href="/emoji-player/build/">Emoji播放器</Anchor>
                     </h3>
                     <p>一个使用Emoji来当作像素的视频播放器</p>
                 </li>

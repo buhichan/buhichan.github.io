@@ -1,0 +1,11 @@
+{
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/bower_components": true,
+        "**/build":true,
+        "**/dist":true,
+        "**/assets":true,
+        "**/prerelease":true,
+        "main.js":true,
+    }
+}

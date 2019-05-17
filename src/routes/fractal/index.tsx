@@ -79,7 +79,7 @@ export default function Fractal(){
         }} />
         <div>
             <p>分形是孤独的图形, 自身解释了自身, 自己完善了自己.</p>
-            <p>每当我想象, 都能给我莫大的勇气.</p>
+            <p>在脑中描绘分形, 每次都能给我莫大的勇气.</p>
         </div>
         <div>
             <label>起始图像边数</label>
@@ -88,7 +88,7 @@ export default function Fractal(){
         <div>
             <label>循环次数</label>
             <input type="number" min={0} step={1} value={loop} onChange={e=>setLoop(+e.currentTarget.value)} />
-            注意: 分形是由你的浏览器计算的, 所以如果循环次数太高你的浏览器会很卡
+            <p style={{color:"#999"}}>注意: 分形是由你的浏览器计算的, 所以如果循环次数太高你的浏览器会很卡</p>
         </div>
         <div>
             <div>种子:</div>

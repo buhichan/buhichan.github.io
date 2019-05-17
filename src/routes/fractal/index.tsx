@@ -68,6 +68,7 @@ export default function Fractal(){
 
 
     return <div>
+        <h2>分形实验</h2>
         <canvas ref={ref} style={{
             width:600,
             height:600,
@@ -76,6 +77,10 @@ export default function Fractal(){
             right:0,
             zIndex:-1
         }} />
+        <div>
+            <p>分形是孤独的图形, 自身解释了自身, 自己完善了自己.</p>
+            <p>每当我想象, 都能给我莫大的勇气.</p>
+        </div>
         <div>
             <label>起始图像边数</label>
             <input type="number" min={3} step={1} value={edge} onChange={e=>setEdge(+e.currentTarget.value)} />

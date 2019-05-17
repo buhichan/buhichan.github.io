@@ -2,17 +2,17 @@ import * as React from "react"
 import { interval } from "rxjs";
 import { map } from "rxjs/operators";
 
+const defaultRands = ()=>[
+    [Math.random() * 0.4,Math.random() * 0.4],
+    [Math.random() * 0.4 + 0.2,Math.random() * 0.4],
+    [Math.random() * 0.4 + 0.4,Math.random() * 0.4],
+    [Math.random() * 0.4 + 0.8,Math.random() * 0.4],
+] as Point[]
+
 export default function Fractal(){
     const ref = React.useRef(null as null | HTMLCanvasElement)
 
-    const [rands,setRands] = React.useState(()=>{
-        return [
-            [Math.random() * 0.4,Math.random() * 0.4],
-            [Math.random() * 0.4 + 0.2,Math.random() * 0.4],
-            [Math.random() * 0.4 + 0.4,Math.random() * 0.4],
-            [Math.random() * 0.4 + 0.8,Math.random() * 0.4],
-        ] as Point[]
-    })
+    const [rands,setRands] = React.useState(defaultRands)
 
     const [edge,setEdge] = React.useState(3)
 
@@ -69,13 +69,11 @@ export default function Fractal(){
 
     return <div>
         <h2>分形实验</h2>
-        <canvas ref={ref} style={{
-            width:600,
-            height:600,
-            position:"absolute",
-            top:0,
-            right:0,
-            zIndex:-1
+        <canvas onClick={()=>{
+            setRands(defaultRands())
+        }} ref={ref} style={{
+            width:"100%",
+            height:"100%",
         }} />
         <div>
             <p>分形是孤独的图形, 自身解释了自身, 自己完善了自己.</p>

@@ -25,6 +25,7 @@ header {
     right:0;
     overflow:auto;
     left: var(--sidebar-width);
+    padding: 8px 4px;
 }
 
 #sidebar{
@@ -58,4 +59,18 @@ input {
     border: 1px solid var(--primary-color);
     color: var(--input-color);
     min-width: 100px;
+}
+
+@media (max-width: 768px){
+    #sidebar {
+        position: relative;
+        width: 100%;
+        height: auto;
+    }
+    #content {
+        position: relative;
+        left: 0;
+        width: 100%;
+        height: auto;
+    }
 }

@@ -2,6 +2,9 @@
 :root{
     --topbar-height: 58px;
     --sidebar-width: 240px;
+
+    --primary-color: #490;
+    --input-color: #333;
 }
 
 header {
@@ -10,7 +13,7 @@ header {
     right:0;
     height: var(--topbar-height);
     line-height: var(--topbar-height);
-    background: #490;
+    background: var(--primary-color);
     color: #fff;
     padding-left: 20px;
 }
@@ -49,4 +52,10 @@ ul {
 #sidebar li {
     display:block;
     margin: 8px 0;
+}
+
+input {
+    border: 1px solid var(--primary-color);
+    color: var(--input-color);
+    min-width: 100px;
 }

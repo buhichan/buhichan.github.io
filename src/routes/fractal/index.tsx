@@ -1,43 +1,58 @@
 import * as React from "react"
 import { interval } from "rxjs";
 import { map } from "rxjs/operators";
-import { useSource } from "rehooker";
-
-const loop$ = interval(1000).pipe(
-    map(i=>i % 6 + 1)
-)
 
 export default function Fractal(){
     const ref = React.useRef(null as null | HTMLCanvasElement)
 
-    const loop = useSource(loop$) || 0
-    
+    const [rands,setRands] = React.useState(()=>{
+        return [
+            [Math.random() * 0.2,Math.random() * 0.3],
+            [Math.random() * 0.2 + 0.2,Math.random() * 0.3],
+            [Math.random() * 0.2 + 0.4,Math.random() * 0.3],
+            [Math.random() * 0.2 + 0.8,Math.random() * 0.3],
+        ] as Point[]
+    })
+
+    const [edge,setEdge] = React.useState(3)
+
+    const [loop,setLoop] = React.useState(3)
+
+
     React.useEffect(()=>{
         if(ref.current){
-            const {width:W,height:H} = ref.current.getBoundingClientRect()
+            const {width:W,height:H} = ref.current.parentElement.getBoundingClientRect()
             const U = Math.min(W,H)
             ref.current.height = U * 2
             ref.current.width = U * 2
-            ref.current.style.height = U + "px"
-            ref.current.style.width = U + "px"
 
-            const M = U * Math.pow(3,-1/2)
-            const points:Point[] = [
-                [U,U/3],
-                [U+M,U/3*4],
-                [U-M,U/3*4],
-            ]
-            const path = [
-                ...雪花([points[0],points[1]]),
-                ...雪花([points[1],points[2]]),
-                ...雪花([points[2],points[0]]),
-            ]
+            if(edge < 3){
+                return 
+            }
+            if(loop < 0){
+                return
+            }
+
+            const 雪花 = makeFractal(rands,loop)
+
+            const points:Point[] = new Array(edge).fill(0).map((_,i)=>{
+                return [
+                    Math.cos(Math.PI * 2 / edge * i) * U / 2,
+                    Math.sin(Math.PI * 2 / edge * i) * U / 2 ,
+                ]
+            })
+            
+            const path = points.reduce((path,x,i)=>[
+                ...path,
+                ...雪花([points[i],i === points.length - 1 ? points[0] : points[i+1]]),
+            ],[] as Point[])
 
             const context2d = ref.current.getContext('2d')
             if(context2d){
                 // let anime = requestAnimationFrame(function render(){
                     context2d.clearRect(0,0,window.innerWidth,window.innerHeight)
                     context2d.beginPath()
+                    context2d.translate(U,U)
                     context2d.strokeStyle = "#000"
                     context2d.moveTo(...path[0])
                     for(let point of path){
@@ -49,28 +64,61 @@ export default function Fractal(){
                 // return ()=>cancelAnimationFrame(anime)
             }
         }
-    },[loop])
+    },[loop,edge,rands])
+
+
     return <div>
         <canvas ref={ref} style={{
-            width:"100%",
-            height:"100%",
-            right:0,
+            width:600,
+            height:600,
             position:"absolute",
+            top:0,
+            right:0,
+            zIndex:-1
         }} />
+        <div>
+            <label>起始图像边数</label>
+            <input type="number" min={3} step={1} value={edge} onChange={e=>setEdge(+e.currentTarget.value)} />
+        </div>
+        <div>
+            <label>循环次数</label>
+            <input type="number" min={0} step={1} value={loop} onChange={e=>setLoop(+e.currentTarget.value)} />
+            注意: 分形是由你的浏览器计算的, 所以如果循环次数太高你的浏览器会很卡
+        </div>
+        <div>
+            <div>种子:</div>
+            {
+                rands.map((x,i)=>{
+                    return <div key={i}>
+                        <div>
+                            <label>x</label>
+                            <input style={{width:200}} value={x[0]} type="number" min={0} max={1} onChange={(e)=>{
+                                const copy = rands.slice()
+                                copy[i] = copy[i].slice() as Point
+                                copy[i][0] = Number(e.currentTarget.value)
+                                setRands(copy)
+                            }}></input>
+                        </div>
+                        <div>
+                            <label>y</label>
+                            <input style={{width:200}} value={x[1]} type="number" min={0} max={1} onChange={(e)=>{
+                                const copy = rands.slice()
+                                copy[i] = copy[i].slice() as Point
+                                copy[i][1] = Number(e.currentTarget.value)
+                                setRands(copy)
+                            }}></input>
+                        </div>
+                    </div>
+                })
+            }
+        </div>
     </div>
 }
 
 type Point = [number,number]
 
-const 雪花 = make雪花(5)
-
-function make雪花(layer:number){
-    const rands = [
-        [Math.random() * 0.2,Math.random() * 0.3],
-        [Math.random() * 0.2 + 0.2,Math.random() * 0.3],
-        [Math.random() * 0.2 + 0.4,Math.random() * 0.3],
-        [Math.random() * 0.2 + 0.8,Math.random() * 0.3],
-    ]
+function makeFractal(rands:Point[], layer:number){
+    
     return function 雪花Inner (line:Point[],curLayer = layer):Point[]{
         if(curLayer === 0){
             return line

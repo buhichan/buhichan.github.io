@@ -7,10 +7,10 @@ export default function Fractal(){
 
     const [rands,setRands] = React.useState(()=>{
         return [
-            [Math.random() * 0.2,Math.random() * 0.3],
-            [Math.random() * 0.2 + 0.2,Math.random() * 0.3],
-            [Math.random() * 0.2 + 0.4,Math.random() * 0.3],
-            [Math.random() * 0.2 + 0.8,Math.random() * 0.3],
+            [Math.random() * 0.4,Math.random() * 0.4],
+            [Math.random() * 0.4 + 0.2,Math.random() * 0.4],
+            [Math.random() * 0.4 + 0.4,Math.random() * 0.4],
+            [Math.random() * 0.4 + 0.8,Math.random() * 0.4],
         ] as Point[]
     })
 
@@ -92,7 +92,7 @@ export default function Fractal(){
                     return <div key={i}>
                         <div>
                             <label>x</label>
-                            <input style={{width:200}} value={x[0]} type="number" min={0} max={1} onChange={(e)=>{
+                            <input style={{width:200}} value={x[0]} type="number" min={-1} max={1} step={0.1} onChange={(e)=>{
                                 const copy = rands.slice()
                                 copy[i] = copy[i].slice() as Point
                                 copy[i][0] = Number(e.currentTarget.value)
@@ -101,7 +101,7 @@ export default function Fractal(){
                         </div>
                         <div>
                             <label>y</label>
-                            <input style={{width:200}} value={x[1]} type="number" min={0} max={1} onChange={(e)=>{
+                            <input style={{width:200}} value={x[1]} type="number" min={-1} max={1} step={0.1} onChange={(e)=>{
                                 const copy = rands.slice()
                                 copy[i] = copy[i].slice() as Point
                                 copy[i][1] = Number(e.currentTarget.value)

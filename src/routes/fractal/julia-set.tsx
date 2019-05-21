@@ -76,7 +76,7 @@ export default function JuliaSet(){
             renderer.setPixelRatio(window.devicePixelRatio)
             renderer.debug.checkShaderErrors = true
             const scene = new th.Scene()
-            const camera = new th.PerspectiveCamera(45,1,5,U * 4)
+            const camera = new th.PerspectiveCamera(45, 1, 1e-16, U * 4)
             scene.add(camera)
             camera.position.set(0,0,U * 2)
             camera.lookAt(0,0,0)
@@ -109,10 +109,10 @@ export default function JuliaSet(){
                 e.stopPropagation()
                 e.preventDefault()
                 if(e.ctrlKey){
-                    camera.translateZ(e.deltaY * 10)
+                    camera.position.z *= (100 + e.deltaY) / 100
                 }else{
-                    camera.translateX(e.deltaX)
-                    camera.translateY(-e.deltaY)
+                    camera.position.x += e.deltaX * camera.position.z / 100
+                    camera.position.y -= e.deltaY * camera.position.z / 100
                 }
             })
             render()

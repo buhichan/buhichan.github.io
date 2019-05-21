@@ -1,6 +1,7 @@
 import * as React from "react"
 import * as th from "three"
 import { fromEvent } from "rxjs";
+import {makeTimer} from "../../services/timer"
 
 const vertexShader = `
 varying vec2 vUv;
@@ -96,28 +97,31 @@ export default function JuliaSet(){
             )
             plane.lookAt(camera.position)
             scene.add(plane)
-            let start = Date.now()
-            let current = start
-            let paused = false
+            const timer = makeTimer(canvas)
             const render = ()=>{
+                timer.update()
                 renderer.render(scene,camera)
-                if(paused){
-                    start = start + Date.now() - current
-                }
-                current = Date.now()
-                material.uniforms.iTime.value = current - start
+                material.uniforms.iTime.value = timer.getTime()
                 anime = requestAnimationFrame(render)
             }
             let anime:number
-            render()
-            const sub = fromEvent(canvas,'click').subscribe(()=>{
-                paused = !paused
+            const transformSub = fromEvent(canvas,'mousewheel').subscribe((e:WheelEvent)=>{
+                e.stopPropagation()
+                e.preventDefault()
+                if(e.ctrlKey){
+                    camera.translateZ(e.deltaY * 10)
+                }else{
+                    camera.translateX(e.deltaX)
+                    camera.translateY(-e.deltaY)
+                }
             })
+            render()
             return ()=>{
                 if(anime){
                     cancelAnimationFrame(anime)
                 }
-                sub.unsubscribe()
+                timer.unsubscribe()
+                transformSub.unsubscribe()
             }
         }
     },[canvasRef.current])

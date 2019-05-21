@@ -18,6 +18,15 @@ const routes:IRoute[] = [
     {
         path:"/fractal",
         name:"分形",
+        children:[
+            {
+                path:"/fractal",
+                name:"分形线段",
+            },{
+                path:"/fractal/julia-set",
+                name:"朱丽叶集"
+            }
+        ]
     },{
         path:"/article",
         name:"文章",
@@ -36,17 +45,20 @@ const routes:IRoute[] = [
     }
 ]
 
-function renderRoutes(routes:IRoute[]){
-    return routes.map(x=>{
-        return <Route key={x.path} path={x.path === "/" ? /^\/$/: new RegExp(x.path)}>
-            {(matchs)=>import("./routes"+x.path).then(({default:Comp})=>{
-                return <>
-                    <Comp />
-                    {x.children ? renderRoutes(x.children) : null}
-                </>
-            })}
-        </Route>
-    })
+function renderRoutes(routes:IRoute[]):React.ReactNode[]{
+    let res = []
+    for(let x of routes){
+        if(x.children){
+            res = res.concat(renderRoutes(x.children))
+        }else{
+            res.push(<Route key={x.path} path={new RegExp("^"+x.path+"$")}>
+                {(matchs)=>import("./routes"+x.path).then(({default:Comp})=>{
+                    return <Comp />
+                })}
+            </Route>)
+        }
+    }
+    return res
 }
 
 function renderMenu(routes:IRoute[]){

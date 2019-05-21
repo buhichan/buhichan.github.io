@@ -10,12 +10,14 @@
 header {
     position:fixed;
     left:0;
+    top:0;
     right:0;
     height: var(--topbar-height);
     line-height: var(--topbar-height);
     background: var(--primary-color);
     color: #fff;
     padding-left: 20px;
+    z-index: 20;
 }
 
 #content{
@@ -69,6 +71,7 @@ input {
     }
     #content {
         position: relative;
+        padding: 0;
         left: 0;
         width: 100%;
         height: auto;

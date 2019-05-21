@@ -1,5 +1,6 @@
 import * as React from "react"
 import * as th from "three"
+import { fromEvent } from "rxjs";
 
 const vertexShader = `
 varying vec2 vUv;
@@ -96,17 +97,27 @@ export default function JuliaSet(){
             plane.lookAt(camera.position)
             scene.add(plane)
             let start = Date.now()
+            let current = start
+            let paused = false
             const render = ()=>{
                 renderer.render(scene,camera)
-                material.uniforms.iTime.value = Date.now() - start
+                if(paused){
+                    start = start + Date.now() - current
+                }
+                current = Date.now()
+                material.uniforms.iTime.value = current - start
                 anime = requestAnimationFrame(render)
             }
             let anime:number
             render()
+            const sub = fromEvent(canvas,'click').subscribe(()=>{
+                paused = !paused
+            })
             return ()=>{
                 if(anime){
                     cancelAnimationFrame(anime)
                 }
+                sub.unsubscribe()
             }
         }
     },[canvasRef.current])

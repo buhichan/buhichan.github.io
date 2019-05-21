@@ -74,7 +74,7 @@ export default function JuliaSet(){
             renderer.setPixelRatio(window.devicePixelRatio)
             renderer.debug.checkShaderErrors = true
             const scene = new th.Scene()
-            const camera = new th.PerspectiveCamera(45,1,5,2000)
+            const camera = new th.PerspectiveCamera(45,1,5,U * 4)
             scene.add(camera)
             camera.position.set(0,0,U * 2)
             camera.lookAt(0,0,0)

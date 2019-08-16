@@ -24,7 +24,7 @@ const routes:IRoute[] = [
                 name:"分形线段",
             },{
                 path:"/fractal/julia-set",
-                name:"朱丽叶集"
+                name:"朱力亚集"
             }
         ]
     },{

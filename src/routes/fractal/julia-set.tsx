@@ -20,7 +20,7 @@ varying vec2 vUv;
 const int maxIteration = 50;    
 const float maxIterationFloat = 50.0;
 
-const float infinity = 4.0;
+const float limit = 32.0;
 
 const float magicConstant = 0.618;
 
@@ -35,18 +35,23 @@ vec3 hsb2rgb( in vec3 c ){
 
 vec3 juliaSet(vec2 coord, vec2 c){
     vec2 z = vec2( coord.x - 0.5, coord.y - 0.5) * 5.0;
+    float l = 0.0;
+    float loop = 0.0;
     for(int i=0; i<maxIteration; i++){
- 		z = vec2(z.x * z.x - z.y * z.y , z.x * z.y * 2.0) + c;
-        if(length(z) > infinity){
-            float x = log( log(length(z)) / log(2.0) / maxIterationFloat ) / log(2.0);
-            return hsb2rgb(vec3( x , 1.0, 1.0 ));
+        z = vec2(z.x * z.x - z.y * z.y , z.x * z.y * 2.0) + c;
+        l = length(z);
+        loop += 1.0;
+        if(l > limit){
+            break;
         }
     }
-    return vec3(0.0,0.0,0.0);
+    float x = log( log(l) / log(2.0) / loop ) / log(2.0);
+    return hsb2rgb(vec3( x , ( step(l,limit) + step(l,limit * 2.0) ) / 2.0, 1.0 ));
 }
 
 vec4 getColor(vec2 coord){
- 	vec2 c = magicConstant * vec2(cos(iTime / 2000.0),sin(iTime / 2000.0));
+    vec2 c = magicConstant * vec2(cos(iTime / 2000.0),sin(iTime / 2000.0));
+    //vec2 c = vec2(x,y);
     vec3 res = juliaSet(coord,c);
     return vec4( res, 1.0);
 }

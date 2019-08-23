@@ -7,6 +7,7 @@ const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
 const CircularDependencyPlugin = require("circular-dependency-plugin")
 const TerserPlugin = require('terser-webpack-plugin')
 const HtmlWebpackPlugin = require("html-webpack-plugin")
+const DynamicCdnWebpackPlugin = require('dynamic-cdn-webpack-plugin');
 
 const compiler = webpack({
     mode:process.env.NODE_ENV,
@@ -63,6 +64,29 @@ const compiler = webpack({
         }),
         new webpack.NamedModulesPlugin(),
         ...process.env.NODE_ENV === 'production' ? [
+            new DynamicCdnWebpackPlugin({
+                only: ['react', 'react-dom', 'moment', 'three'],
+                verbose:true,
+                resolver:(modulePath, version)=>{
+                    const moduleName = path.basename(modulePath)
+                    return {
+                        name:moduleName, 
+                        var:{
+                            'three':"THREE",
+                            'react':'React',
+                            'react-dom':"ReactDOM",
+                            'moment':"moment",
+                        }[moduleName], 
+                        url:`https://unpkg.com/${moduleName}@${version}/${{
+                            'three':"build/three.js",
+                            'react':"umd/react.production.min.js",
+                            'react-dom':"umd/react-dom.production.min.js",
+                            'moment':"moment.js",
+                        }[moduleName]}`, 
+                        version
+                    }
+                }
+            }),
             new BundleAnalyzerPlugin({
                 analyzerMode:"static"
             }),
@@ -93,14 +117,14 @@ const compiler = webpack({
          */
         splitChunks:{ 
             cacheGroups:{
-                vendors: {
-                    name:"vendors",
-                    minSize:0,
-                    minChunks: 1,
-                    chunks: "all",
-                    test: /node_modules\/(antd|rc-[a-z\-]+|@ant-design|moment|react|react-dom|rxjs)\//,
-                    priority: -10
-                },
+                // vendors: {
+                //     name:"vendors",
+                //     minSize:0,
+                //     minChunks: 1,
+                //     chunks: "all",
+                //     test: /node_modules\/(three|antd|rc-[a-z\-]+|@ant-design|moment|react|react-dom|rxjs)\//,
+                //     priority: -10
+                // },
                 default: {
                     priority: -20,
                     reuseExistingChunk: true

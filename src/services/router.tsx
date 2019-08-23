@@ -10,10 +10,10 @@ export const location$ = new BehaviorSubject(history.location)
 
 history.listen(v=>location$.next(v))
 
-export function Route({prefix,path,children}:{prefix:string,path:string,children:()=>Promise<React.ReactNode>}){
+export function Route({path,children}:{path:string,children:()=>Promise<React.ReactNode>}){
     const location = useObservable(location$) || history.location
     const [Component] = usePromise(async ()=>{
-        const matched = location.pathname === prefix + path
+        const matched = location.pathname === path
         return matched ? children() : null
      },[location])
     return <>

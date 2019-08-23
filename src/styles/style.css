@@ -7,6 +7,10 @@
     --input-color: #333;
 }
 
+* {
+    box-sizing: content-box;
+}
+
 header {
     position:fixed;
     left:0;
@@ -21,12 +25,13 @@ header {
 }
 
 #content{
-    position:fixed;
-    top:var(--topbar-height);
-    height:100vh;
+    margin-top:var(--topbar-height);
     right:0;
     overflow:auto;
-    left: var(--sidebar-width);
+    max-width: 900px;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
     padding: 8px 4px;
 }
 
@@ -71,9 +76,9 @@ input {
     }
     #content {
         position: relative;
-        padding: 0;
+        padding: 0 10px;
         left: 0;
-        width: 100%;
+        width: calc(100% - 20px);
         height: auto;
     }
 }

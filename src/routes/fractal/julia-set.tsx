@@ -81,6 +81,7 @@ export default function JuliaSet(){
             renderer.setPixelRatio(window.devicePixelRatio)
             renderer.debug.checkShaderErrors = true
             const scene = new th.Scene()
+            scene.background = new th.Color(0xffffff);
             const camera = new th.PerspectiveCamera(45, 1, 1e-16, U * 4)
             scene.add(camera)
             camera.position.set(0,0,U * 2)
@@ -132,6 +133,10 @@ export default function JuliaSet(){
     },[canvasRef.current])
 
     return  <>
+        <p>用glsl画的julia set</p>
+        <p>
+            TODO: 怎么支持无限放大呢
+        </p>
         <canvas ref={canvasRef} style={{display:"block"}} />
     </>
 }

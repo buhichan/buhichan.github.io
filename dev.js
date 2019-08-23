@@ -13,11 +13,12 @@ const compiler = webpack({
     mode:process.env.NODE_ENV,
     output:{
         path:path.resolve("./dist"),
-        publicPath:"/dist",
         ...process.env.NODE_ENV === 'production' ? {
+            publicPath:"/dist",
             filename: "[name].[chunkhash].js",
             chunkFilename: '[name].[chunkhash].js'
         } : {
+            publicPath:"/",
             filename: "[name].js",
             chunkFilename: '[name].js'
         },

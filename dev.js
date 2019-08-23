@@ -117,14 +117,22 @@ const compiler = webpack({
          */
         splitChunks:{ 
             cacheGroups:{
-                // vendors: {
-                //     name:"vendors",
-                //     minSize:0,
-                //     minChunks: 1,
-                //     chunks: "all",
-                //     test: /node_modules\/(three|antd|rc-[a-z\-]+|@ant-design|moment|react|react-dom|rxjs)\//,
-                //     priority: -10
-                // },
+                antd: {
+                    name:"antd",
+                    minSize:0,
+                    minChunks: 1,
+                    chunks: "all",
+                    test: /node_modules\/(antd|rc-[a-z\-]+|@ant-design)\//,
+                    priority: 200
+                },
+                vendors: {
+                    name:"vendors",
+                    minSize:0,
+                    minChunks: 1,
+                    chunks: "all",
+                    test: /node_modules\/(three|antd|rc-[a-z\-]+|@ant-design|moment|react|react-dom|rxjs)\//,
+                    priority: -10
+                },
                 default: {
                     priority: -20,
                     reuseExistingChunk: true

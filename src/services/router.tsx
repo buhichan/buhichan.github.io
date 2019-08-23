@@ -10,11 +10,11 @@ export const location$ = new BehaviorSubject(history.location)
 
 history.listen(v=>location$.next(v))
 
-export function Route({path,children}:{path:RegExp,children:(params:RegExpMatchArray,loc:Location)=>Promise<React.ReactNode>}){
+export function Route({prefix,path,children}:{prefix:string,path:string,children:()=>Promise<React.ReactNode>}){
     const location = useObservable(location$) || history.location
     const [Component] = usePromise(async ()=>{
-        const match = location.pathname.match(path)
-        return match ? children(match,location) : null
+        const matched = location.pathname === prefix + path
+        return matched ? children() : null
      },[location])
     return <>
         {Component}

@@ -45,14 +45,16 @@ const routes:IRoute[] = [
     }
 ]
 
+const PUBLIC_PREFIX = "/dist"
+
 function renderRoutes(routes:IRoute[]):React.ReactNode[]{
     let res = []
     for(let x of routes){
         if(x.children){
             res = res.concat(renderRoutes(x.children))
         }else{
-            res.push(<Route key={x.path} path={new RegExp("^"+x.path+"$")}>
-                {(matchs)=>import("./routes"+x.path).then(({default:Comp})=>{
+            res.push(<Route prefix={PUBLIC_PREFIX} key={x.path} path={x.path}>
+                {()=>import("./routes"+x.path).then(({default:Comp})=>{
                     return <Comp />
                 })}
             </Route>)

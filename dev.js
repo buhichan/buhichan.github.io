@@ -3,15 +3,23 @@ const path = require("path")
 // const CopyWebpackPlugin = require("copy-webpack-plugin")
 const app = require('express')()
 const serveStatic = require('serve-static')
-// const HTMLWebpackPlugin = require("html-webpack-plugin")
+const {BundleAnalyzerPlugin} = require('webpack-bundle-analyzer')
+const CircularDependencyPlugin = require("circular-dependency-plugin")
+const TerserPlugin = require('terser-webpack-plugin')
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 const compiler = webpack({
     mode:process.env.NODE_ENV,
     output:{
-        path:path.resolve("./"),
-        publicPath:"/",
-        filename: "[name].js",
-        chunkFilename: '[name].js'
+        path:path.resolve("./dist"),
+        publicPath:"/dist",
+        ...process.env.NODE_ENV === 'production' ? {
+            filename: "[name].[chunkhash].js",
+            chunkFilename: '[name].[chunkhash].js'
+        } : {
+            filename: "[name].js",
+            chunkFilename: '[name].js'
+        },
     },
     entry:{
         main:[
@@ -37,21 +45,69 @@ const compiler = webpack({
         extensions:[".js",".ts",".tsx",".css"]
     },
     plugins:[
-        // new CopyWebpackPlugin([
-        //     {
-        //         from:path.resolve("./assets"),
-        //         to:"assets"
-        //     },
-        //     {
-        //         from:path.resolve("./articles"),
-        //         to:"articles"
-        //     },
-        // ]),
-        // new HTMLWebpackPlugin({
-        //     template:path.resolve("./src/index.html"),
-        //     inject:"body",
-        // })
+        new HtmlWebpackPlugin({
+            template: path.resolve(__dirname,'./src/index.html'),
+            inject: 'body',
+            chunksSortMode:"none",
+        }),
+        new CircularDependencyPlugin({
+            // exclude detection of files based on a RegExp
+            exclude: /node_modules/,
+            // add errors to webpack instead of warnings
+            failOnError: true,
+            // allow import cycles that include an asyncronous import,
+            // e.g. via import(/* webpackMode: "weak" */ './file.js')
+            allowAsyncCycles: false,
+            // set the current working directory for displaying module paths
+            cwd: process.cwd(),
+        }),
+        new webpack.NamedModulesPlugin(),
+        ...process.env.NODE_ENV === 'production' ? [
+            new BundleAnalyzerPlugin({
+                analyzerMode:"static"
+            }),
+        ] : []
     ],
+    optimization:{
+        usedExports:true,
+        minimizer:[
+            ...process.env.NODE_ENV === 'production' ? [
+                new TerserPlugin({
+                    sourceMap:true,
+                    terserOptions:{
+                        mangle: {
+                            /**
+                             * uglify必须忽略掉process.env.NODE_ENNV这样的变量名
+                             */
+                            reserved: ['process']
+                        }
+                    }
+                })
+            ] : [],
+        ],
+        noEmitOnErrors:process.env.NODE_ENV === 'development',
+        runtimeChunk:"single",
+        nodeEnv:process.env.NODE_ENV,
+        /**
+         * 把不常更新的依赖移动到单独的vendors文件, 获得long term caching.
+         */
+        splitChunks:{ 
+            cacheGroups:{
+                vendors: {
+                    name:"vendors",
+                    minSize:0,
+                    minChunks: 1,
+                    chunks: "all",
+                    test: /node_modules\/(antd|rc-[a-z\-]+|@ant-design|moment|react|react-dom|rxjs)\//,
+                    priority: -10
+                },
+                default: {
+                    priority: -20,
+                    reuseExistingChunk: true
+                }
+            }
+        }
+    },
     watch:process.env.NODE_ENV === 'development'
 })
 

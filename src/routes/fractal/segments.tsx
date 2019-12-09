@@ -68,7 +68,7 @@ export default function Fractal(){
 
 
     return <div>
-        <h2>分形实验</h2>
+        <h2>简单的线段分形</h2>
         <canvas onClick={()=>{
             setRands(defaultRands())
         }} ref={ref} style={{
@@ -76,8 +76,7 @@ export default function Fractal(){
             height:"100%",
         }} />
         <div>
-            <p>分形是孤独的图形, 自身解释了自身, 自己完善了自己.</p>
-            <p>在脑中描绘分形, 每次都能给我莫大的勇气.</p>
+            <p>简单的线段分形, 从一个正多边形派生出的分形.</p>
         </div>
         <div>
             <label>起始图像边数</label>

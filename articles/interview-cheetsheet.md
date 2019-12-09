@@ -49,6 +49,8 @@
     - server
         - change cipher spec
         - finished
+    - TLS 为什么可以防御中间人攻击
+        - 非对称加密签名和CA(certificate authority, 证书授权)保证了签名即使被伪造了也无法跟域名对应
 - HTTP请求
 - HTTP响应
 - 渲染
@@ -101,4 +103,26 @@
 没有就etag/if-none-match
 Etag不合适就cache-control
 
+# JS性能优化
 
+> One large change to the cost of JavaScript over the last few years has been an improvement in how fast browsers can parse and compile script. In 2019, the dominant costs of processing scripts are now download and CPU execution time.
+>
+> -- <cite>[https://v8.dev/blog/cost-of-javascript-2019](https://v8.dev/blog/cost-of-javascript-2019)</cite>
+
+- 优化下载时间
+    - 减少单个脚本大小到50K-100K左右
+    - &lt;preload /&gt; 标签
+    - 上http2
+        - http2复用http连接, 对同时多请求的支持好
+    - 给script 标签加上async
+- 优化执行时间
+    - 使用profiler优化执行时间长的函数 ( Long Task )
+- 避免inline script 标签
+
+
+# HTML Parser
+- preload scan
+    - script, preload, ... 
+        - download
+- parse html to dom 
+- parse css to cssom 

@@ -28,10 +28,8 @@ header {
     margin-top:var(--topbar-height);
     right:0;
     overflow:auto;
-    max-width: 900px;
     position: relative;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: var(--sidebar-width);
     padding: 8px 4px;
 }
 
@@ -67,6 +65,10 @@ input {
     color: var(--input-color);
     min-width: 100px;
 }
+
+/* canvas { */
+    /* background: #fff; */
+/* } */
 
 @media (max-width: 768px){
     #sidebar {

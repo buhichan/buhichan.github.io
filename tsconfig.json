@@ -3,7 +3,8 @@
         "moduleResolution": "node",
         "target": "esnext",
         "module": "commonjs",
-        "jsx": "react",
+        "lib": ["dom","scripthost","esnext.bigint"],
+        "jsx": "react"
     },
     "include": ["src"]
 }

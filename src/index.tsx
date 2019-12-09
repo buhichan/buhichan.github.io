@@ -16,15 +16,15 @@ const routes:IRoute[] = [
         name:"首页",
     },
     {
-        path:"/fractal",
-        name:"分形",
+        path:"/webgl",
+        name:"Webgl",
         children:[
             {
-                path:"/fractal",
+                path:"/fractal/segments",
                 name:"分形线段",
             },{
-                path:"/fractal/julia-set",
-                name:"朱力亚集"
+                path:"/fractal/webgl2-renderer",
+                name:"raw webgl2"
             }
         ]
     },{

@@ -40,11 +40,15 @@ const compiler = webpack({
                     "style-loader",
                     "css-loader",
                 ]
+            },
+            {
+                test:/\.glsl$/,
+                loader:"raw-loader"
             }
         ]
     },
     resolve:{
-        extensions:[".js",".ts",".tsx",".css"]
+        extensions:[".js",".ts",".tsx",".css",".glsl"]
     },
     plugins:[
         new HtmlWebpackPlugin({

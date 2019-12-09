@@ -14,6 +14,7 @@ const shaders = [
     "mandelbrot-set" as const,
     "julia-set" as const,
     // "candle-flame" as const,
+    "burning-ship" as const,
 ]
 
 const vertexShader = `#version 300 es

@@ -18,10 +18,10 @@ const float limit = 2.0;
 vec3 colorMapping(in float c, in float loop, in float maxIteration){
 
     return mix(
-        step(21.0, loop) * vec3(
+        step(2.0, loop) * vec3(
             cos(c / 2.0),
-            cos(c / (params.x + 22.5)),
-            cos(c / (params.y + 31.0))
+            cos(c / (params.x + 26.5)),
+            cos(c / (params.y + 150.0))
         ),
         vec3(1.0,1.0,1.0),
         loop / maxIteration

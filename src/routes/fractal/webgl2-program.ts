@@ -18,6 +18,7 @@ const shaderChunks = {
     fbm: require("./shader-chunks/fbm.glsl").default,
     hsl2rgb: require("./shader-chunks/hsl2rgb.glsl").default,
     noise: require("./shader-chunks/noise.glsl").default,
+    complex: require("./shader-chunks/complex.glsl").default,
 }
 
 function shaderPreprocessor(source:string){
@@ -52,15 +53,19 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
     {
         gl.attachShader(program,vs)
         const errLog = gl.getShaderInfoLog(vs)
-        errLog && console.log(errLog)
         gl.deleteShader(vs)
+        if(errLog){
+            throw new Error(errLog)
+        }
     }
 
     {
         gl.attachShader(program,fs)
         const errLog = gl.getShaderInfoLog(fs)
-        errLog && console.log(errLog)
         gl.deleteShader(fs)
+        if(errLog){
+            throw new Error(errLog)
+        }
     }
 
     gl.linkProgram(program)

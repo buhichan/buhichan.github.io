@@ -4,9 +4,10 @@ import { Route,history, Anchor } from "./services/router";
 const ReactDOM = require('react-dom')
 import "./styles/style.css"
 
-type IRoute = {
+type IRoute<P=any> = {
     path:string,
     name:string,
+    component:React.ExoticComponent<P>,
     children?:IRoute[]
 }
 
@@ -14,34 +15,43 @@ const routes:IRoute[] = [
     {
         path:"/",
         name:"首页",
+        component:React.lazy(()=>import("./routes")),
     },
     {
-        path:"/webgl",
-        name:"Webgl",
+        path:"/fractal",
+        name:"fractal",
+        component:React.lazy(()=>import("./routes/fractal")),
         children:[
             {
                 path:"/fractal/segments",
+                component:React.lazy(()=>import("./routes/fractal/segments")),
                 name:"分形线段",
             },{
                 path:"/fractal/webgl2-renderer",
-                name:"raw webgl2"
+                name:"raw webgl2",
+                component:React.lazy(()=>import("./routes/fractal/webgl2-renderer")),
             }
         ]
     },{
         path:"/article",
         name:"文章",
+        component:React.lazy(()=>import("./routes/article")),
     },{
         path:"/emoji-player",
         name:"EmojiPlayer",
+        component:React.lazy(()=>import("./routes/emoji-player")),
     },{
         path:"/css-experiments",
-        name:"CSS实验"
+        name:"CSS实验",
+        component:React.lazy(()=>import("./routes/css-experiments")),
     },{
         path:"/schema-form-demo",
-        name:"FormDemo"
+        name:"FormDemo",
+        component:React.lazy(()=>import("./routes/schema-form-demo")),
     },{
         path:"/virtual-scroll-demo",
-        name:"VirtualScrollDemo"
+        name:"VirtualScrollDemo",
+        component:React.lazy(()=>import("./routes/virtual-scroll-demo")),
     }
 ]
 
@@ -51,11 +61,7 @@ function renderRoutes(routes:IRoute[]):React.ReactNode[]{
         if(x.children){
             res = res.concat(renderRoutes(x.children))
         }else{
-            res.push(<Route key={x.path} path={x.path}>
-                {()=>import("./routes"+x.path).then(({default:Comp})=>{
-                    return <Comp />
-                })}
-            </Route>)
+            res.push(<Route key={x.path} path={x.path} component={x.component} />)
         }
     }
     return res

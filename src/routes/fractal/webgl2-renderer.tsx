@@ -15,6 +15,8 @@ const shaders = [
     "julia-set" as const,
     // "candle-flame" as const,
     "burning-ship" as const,
+    "julia-and-man" as const,
+    "newton-fractal" as const,
 ]
 
 const vertexShader = `#version 300 es
@@ -59,6 +61,8 @@ export default function WebglRenderer (props:Props){
         paused: false,
         mouse: [0,0],
     }),[])
+
+    const [error,setError] = React.useState(null as null | Error)
 
     React.useEffect(()=>{
         const canvas = canvasRef.current as HTMLCanvasElement
@@ -157,83 +161,87 @@ export default function WebglRenderer (props:Props){
             // mat4.fromTranslation(modelMatrix, [50,50,100])
             // mat4.multiply(modelViewMatrix, modelMatrix, viewMatrix)
 
-            const program = createWebgl2Program({
-                gl,
-                vsSource:vertexShader,
-                fsSource:fragmentShader,
-                vboData,
-                uniforms:{
-                    projectionMatrix:[
-                        2/xSegments, 0, 0, -1,
-                        0, 2/ySegments, 0, -1,
-                        0, 0, 1, -0.5,
-                        0, 0, 0, 1
-                    ],
-                    modelViewMatrix:[
-                        1, 0, 0, 0,
-                        0, 1, 0, 0,
-                        0, 0, 1, 0,
-                        0, 0, 0, 1
-                    ],
-                    resolution: [WIDTH,HEIGHT],
-                    time: 0,
-                    params:  params,
-                    zoom: state.zoom,
-                    translate: state.translate,
-                    mouse:state.mouse,
-                },
-                attributes:{
-                    position:{
-                        type: AttrType.float,
-                        size: 3,
-                        stride: vboDataStride * Float32Array.BYTES_PER_ELEMENT,
-                        offset: 0,
+            setError(null)
+            try{
+                const program = createWebgl2Program({
+                    gl,
+                    vsSource:vertexShader,
+                    fsSource:fragmentShader,
+                    vboData,
+                    uniforms:{
+                        projectionMatrix:[
+                            2/xSegments, 0, 0, -1,
+                            0, 2/ySegments, 0, -1,
+                            0, 0, 1, -0.5,
+                            0, 0, 0, 1
+                        ],
+                        modelViewMatrix:[
+                            1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1
+                        ],
+                        resolution: [WIDTH,HEIGHT],
+                        time: 0,
+                        params:  params,
+                        zoom: state.zoom,
+                        translate: state.translate,
+                        mouse:state.mouse,
                     },
-                    uv:{
-                        type: AttrType.float,
-                        size: 2,
-                        stride: vboDataStride * Float32Array.BYTES_PER_ELEMENT,
-                        offset: Float32Array.BYTES_PER_ELEMENT * 3,
+                    attributes:{
+                        position:{
+                            type: AttrType.float,
+                            size: 3,
+                            stride: vboDataStride * Float32Array.BYTES_PER_ELEMENT,
+                            offset: 0,
+                        },
+                        uv:{
+                            type: AttrType.float,
+                            size: 2,
+                            stride: vboDataStride * Float32Array.BYTES_PER_ELEMENT,
+                            offset: Float32Array.BYTES_PER_ELEMENT * 3,
+                        }
+                    },
+                    eboData: elementArray,
+                })
+
+
+                let lastRenderTime = 0
+                let totalPauseTime = 0
+
+                program.bind()
+
+                let isFirstLoop = true
+
+                function loop(timeValue){
+                    program.uniforms.translate = state.translate
+                    program.uniforms.zoom = state.zoom
+                    program.uniforms.params = params
+                    let time = timeValue - totalPauseTime
+                    program.uniforms.time = time
+                    // program.uniforms.projectionMatrix = projectionMatrix
+                    if(state.paused){
+                        totalPauseTime += timeValue - lastRenderTime
+                    }else{
+                        program.uniforms.mouse = state.mouse
                     }
-                },
-                eboData: elementArray,
-            })
-
-
-            let lastRenderTime = 0
-            let totalPauseTime = 0
-
-            program.bind()
-
-            let isFirstLoop = true
-
-            function loop(timeValue){
-                program.uniforms.translate = state.translate
-                program.uniforms.zoom = state.zoom
-                program.uniforms.params = params
-                let time = timeValue - totalPauseTime
-                program.uniforms.time = time
-                // program.uniforms.projectionMatrix = projectionMatrix
-                if(state.paused){
-                    totalPauseTime += timeValue - lastRenderTime
-                }else{
-                    program.uniforms.mouse = state.mouse
+                    lastRenderTime = timeValue
+                    program.draw(gl.TRIANGLES)
+                    if(isFirstLoop){
+                        const buf = new Uint8Array(4)
+                        gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,buf)
+                        console.log([...buf])
+                        isFirstLoop = false
+                    }
+                    animeHandle = requestAnimationFrame(loop)
                 }
-                lastRenderTime = timeValue
-                program.draw(gl.TRIANGLES)
-                if(isFirstLoop){
-                    const buf = new Uint8Array(4)
-                    gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,buf)
-                    console.log([...buf])
-                    isFirstLoop = false
+                let animeHandle = requestAnimationFrame(loop)
+                return ()=>{
+                    cancelAnimationFrame(animeHandle)
+                    program.unbind()
                 }
-                animeHandle = requestAnimationFrame(loop)
-            }
-            let animeHandle = requestAnimationFrame(loop)
-
-            return ()=>{
-                cancelAnimationFrame(animeHandle)
-                program.unbind()
+            }catch(e){
+                setError(e)
             }
         }
     },[fragmentShader])
@@ -282,7 +290,12 @@ export default function WebglRenderer (props:Props){
             </div>    
             <div>
                 <p>mouse is currently at (<span ref={coordinateDisplayRef}></span>)</p>
-            </div>    
+            </div>   
+            {
+                error ? <pre style={{color:"red"}}>
+                    {error.message}
+                </pre> : null
+            } 
             <details open>
                 <summary>
                     show code

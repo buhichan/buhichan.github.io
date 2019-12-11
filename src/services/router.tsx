@@ -10,15 +10,12 @@ export const location$ = new BehaviorSubject(history.location)
 
 history.listen(v=>location$.next(v))
 
-export function Route({path,children}:{path:string,children:()=>Promise<React.ReactNode>}){
+export function Route({path,component:Component,fallback}:{path:string,fallback?:React.ReactNode,component:React.ExoticComponent}){
     const location = useObservable(location$) || history.location
-    const [Component] = usePromise(async ()=>{
-        const matched = location.pathname === path
-        return matched ? children() : null
-     },[location])
-    return <>
-        {Component}
-    </>
+    const matched = location.pathname === path
+    return matched ? <React.Suspense fallback={fallback || null}>
+        <Component />
+    </React.Suspense> : null
 }
 
 export function useSearchParams(){

@@ -139,7 +139,7 @@ const compiler = webpack({
                     priority: -10
                 },
                 default: {
-                    priority: -20,
+                    priority: -100,
                     reuseExistingChunk: true
                 }
             }

@@ -37,7 +37,8 @@ vec3 mandelbrotSet(vec2 c){
     float loop = 0.0;
     float h = 0.0;
     for(int i=0; i<_maxIter; i++){
-        z = vec2(z.x * z.x - z.y * z.y , z.x * z.y * 2.0) + c;
+        //修改这行来查看不同的图案!!!❤️
+        z = complexPow(z, 2.0) + c;
         l = length(z);
         loop += 1.0;
         if(l > limit){

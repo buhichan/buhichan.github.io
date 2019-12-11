@@ -29,20 +29,9 @@ const float PI = 3.1415916;
 #include <complex>;
 
 
-// vec3 colorMapping(in float c, in float loop, in float maxIteration){
-//     return mix(
-//         step(21.0, loop) * vec3(
-//             cos(c / 2.0),
-//             cos(c / (params.x + 4.5)),
-//             cos(c / (params.y + 11.0))
-//         ),
-//         vec3(1.0,1.0,1.0),
-//         loop / maxIteration
-//     );
-// }
-
 vec2 fn(vec2 z){
-    return complexPow(z, 3.0) - vec2(1.0,0.0);
+    //修改这行来查看不同的图案!!!❤️
+    return complexPow(z, 3.0) - vec2(1.0,0.0) - time / 1000.0;
 }
 
 const vec2 deltaZ = vec2(epsilon,epsilon);
@@ -50,11 +39,6 @@ const vec2 deltaZ = vec2(epsilon,epsilon);
 vec2 fnPrime(vec2 z){
     return complexDiv( fn(z + deltaZ) - fn(z), deltaZ );
 }
-
-
-const vec2 root1 = vec2(1.0,0.0);
-const vec2 root2 = vec2(-0.5, sqrt(3.0) / 2.0);
-const vec2 root3 = vec2(-0.5, - sqrt(3.0) / 2.0);
 
 vec3 newtonFractal(vec2 z, vec2 c){
     float l = 0.0;
@@ -64,15 +48,18 @@ vec3 newtonFractal(vec2 z, vec2 c){
         // newton's fractal for z^3 - 1
         z = z - complexDiv( fn(z),  fnPrime(z) );
         loop += 1.0;
-        if(distance(root1, z) < epsilon){
-            return vec3(0.5,1.0,1.0);
+        if(length(fn(z)) < epsilon){
+            return vec3(z.xy,z.y/z.x);
         }
-        if(distance(root2, z) < epsilon){
-            return vec3(1.0,0.5,1.0);
-        }
-        if(distance(root3, z) < epsilon){
-            return vec3(1.0,1.0,0.5);
-        }
+        // if(distance(root1, z) < epsilon){
+        //     return vec3(0.5,1.0,1.0);
+        // }
+        // if(distance(root2, z) < epsilon){
+        //     return vec3(1.0,0.5,1.0);
+        // }
+        // if(distance(root3, z) < epsilon){
+        //     return vec3(1.0,1.0,0.5);
+        // }
     }
     return vec3(1.0,1.0,1.0);
 }

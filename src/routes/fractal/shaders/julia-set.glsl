@@ -17,24 +17,12 @@ const float limit = 2.0;
 #include <hsl2rgb>;
 #include <complex>;
 
-
-// vec3 colorMapping(in float c, in float loop, in float maxIteration){
-//     return mix(
-//         step(21.0, loop) * vec3(
-//             cos(c / 2.0),
-//             cos(c / (params.x + 4.5)),
-//             cos(c / (params.y + 11.0))
-//         ),
-//         vec3(1.0,1.0,1.0),
-//         loop / maxIteration
-//     );
-// }
-
 vec3 juliaSet(vec2 z, vec2 c){
     float l = 0.0;
     float loop = 0.0;
     int maxIteration = int(params.z) + 50;
     for(int i=0; i<maxIteration; i++){
+        //修改这行可以查看不同的图案!!!❤️
         z = complexPow(z, 2.0) + c;
         l = length(z);
         loop += 1.0;

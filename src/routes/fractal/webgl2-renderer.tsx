@@ -2,6 +2,8 @@ import * as React from "react"
 import { createWebgl2Program, AttrType } from "./webgl2-program";
 import { usePromise } from "../../services/use-promise";
 import {mat4} from "gl-matrix"
+import { fromEvent } from "rxjs";
+import { debounceTime } from "rxjs/operators";
 
 // import "webgl2"
 ///<reference path="../../../node_modules/@types/webgl2/index.d.ts" />
@@ -35,12 +37,14 @@ void main(){
 }
 `
 
-const HEIGHT = 1400
-const WIDTH = 1400
+const HEIGHT = 720
+const WIDTH = 720
 
 export default function WebglRenderer (props:Props){
 
-    const canvasRef = React.useRef()
+    const canvasRef = React.useRef<HTMLCanvasElement>()
+
+    const editorRef = React.useRef<HTMLDivElement>()
 
     const coordinateDisplayRef = React.useRef<HTMLSpanElement>()
 
@@ -49,9 +53,27 @@ export default function WebglRenderer (props:Props){
         return urlSearch.get("shader") || shaders[0]
     })
 
-    const [fragmentShader] = usePromise(()=>{
-        return import("./shaders/"+fsName+".glsl").then(res=>{
-            return res.default
+    React.useEffect(()=>{
+        const sub = fromEvent(window,'scroll').pipe(
+            debounceTime(500)
+        ).subscribe(e=>{
+            if(canvasRef.current){
+                const canvas = canvasRef.current
+                // const bcr = canvas.getBoundingClientRect()
+                canvas.style.top = window.scrollY + "px"
+            }
+        })
+        return ()=>sub.unsubscribe()
+    },[])
+
+    const [fragmentShader, setShader] = React.useState(null)
+
+    React.useEffect(()=>{
+        import("./shaders/"+fsName+".glsl").then(res=>{
+            setShader(res.default)
+            if(editorRef.current){
+                editorRef.current.innerText = res.default
+            }
         })
     },[fsName])
 
@@ -71,8 +93,8 @@ export default function WebglRenderer (props:Props){
             e.preventDefault()
             e.stopPropagation()
             if(e.ctrlKey){
-                const offsetX = e.offsetX * devicePixelRatio
-                const offsetY = HEIGHT - e.offsetY * devicePixelRatio
+                const offsetX = e.offsetX  //* devicePixelRatio
+                const offsetY = (HEIGHT - e.offsetY) // * devicePixelRatio
                 const factor = ( 100 + e.deltaY ) / 100 
                 state.translate[0] = (state.translate[0] + offsetX) / factor - offsetX
                 state.translate[1] = (state.translate[1] + offsetY) / factor - offsetY
@@ -88,8 +110,8 @@ export default function WebglRenderer (props:Props){
         })
 
         canvas.addEventListener("mousemove",(e)=>{
-            const offsetX = e.offsetX * devicePixelRatio
-            const offsetY = HEIGHT - e.offsetY * devicePixelRatio
+            const offsetX = e.offsetX // * devicePixelRatio
+            const offsetY = HEIGHT - e.offsetY // * devicePixelRatio
             const x =  (offsetX + state.translate[0]) / WIDTH * state.zoom * 2.0 - 1.0;
             const y =  (offsetY + state.translate[1]) / HEIGHT * state.zoom * 2.0 - 1.0;
             state.mouse[0] = x
@@ -250,8 +272,11 @@ export default function WebglRenderer (props:Props){
 
     const [magicNumberState,setMagicNumberState] = React.useState(params)
 
-    return <div style={{display:"flex",justifyContent:"space-between", alignItems:"flex-start"}}>
-        <div>
+    return <>
+        <div style={{
+            width:`calc(100% - ${WIDTH}px)`,
+            display:"inline-block",
+        }}>
             <p>raw webgl2</p>
             <div onChange={(e)=>{
                 const value = (e.target as HTMLInputElement).value
@@ -296,19 +321,32 @@ export default function WebglRenderer (props:Props){
                     {error.message}
                 </pre> : null
             } 
-            <details open>
-                <summary>
-                    show code
-                </summary>
-                <pre>{fragmentShader}</pre>
-            </details>
+            <div ref={editorRef} style={{
+                whiteSpace:"pre-wrap",
+                background:"#000",
+                color:"#80ff80",
+                padding: 15,
+                borderRadius: 10,
+            }} contentEditable onFocus={e=>{
+
+            }} onInput={e=>{
+                setShader(e.currentTarget.innerText)
+            }} />
         </div>
-        <canvas style={{
-            // position:'absolute',
-            // background:"red",
-            top:0,
-        }} height={HEIGHT / devicePixelRatio} width={WIDTH / devicePixelRatio} ref={canvasRef} />
-    </div>
+        <div style={{
+            display:"inline-block",
+            width: WIDTH,
+            verticalAlign:"top",
+        }}>
+            <canvas style={{
+                position:'relative',
+                // background:"red",
+                width: WIDTH,
+                height: HEIGHT,
+                // top:0,
+            }} height={HEIGHT * devicePixelRatio} width={WIDTH * devicePixelRatio} ref={canvasRef} />
+        </div>
+    </>
 }
 
 function makePlaneGeometryEBO(xSegments:number, ySegments:number){

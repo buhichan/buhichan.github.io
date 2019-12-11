@@ -1,0 +1,24 @@
+
+
+#canvas-left {
+    width: calc(100% - var(--canvas-width));
+    display: inline-block;
+}
+#canvas-right {
+    vertical-align: top;
+    position: relative;
+    display: inline-block;
+    width: var(--canvas-width);
+    height: var(--canvas-width);
+}
+
+@media (max-width: 768px){
+    #canvas-left {
+        width:100vw;
+    }
+    #canvas-right {
+        display: block;
+        width: 100vw;
+        height: 100vw;
+    }
+}

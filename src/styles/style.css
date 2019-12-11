@@ -5,6 +5,8 @@
 
     --primary-color: #490;
     --input-color: #333;
+
+    --canvas-width: 720px;
 }
 
 * {
@@ -66,21 +68,24 @@ input {
     min-width: 100px;
 }
 
-/* canvas { */
-    /* background: #fff; */
-/* } */
-
 @media (max-width: 768px){
     #sidebar {
         position: relative;
-        width: 100%;
+        width: 100vw;
         height: auto;
+        display: none;
     }
     #content {
-        position: relative;
-        padding: 0 10px;
+        position: fixed;
+        padding: 0 0px;
         left: 0;
-        width: calc(100% - 20px);
-        height: auto;
+        margin-left: 0;
+        margin-top: 0;
+        width: 100vw;
+        height: calc(100vh - var(--topbar-height));
+        overflow-y: auto;
+        overflow-x: hidden;
+        top: var(--topbar-height);
+        -webkit-overflow-scrolling: touch;
     }
 }

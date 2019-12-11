@@ -1,9 +1,9 @@
 import * as React from "react"
 import { createWebgl2Program, AttrType } from "./webgl2-program";
-import { usePromise } from "../../services/use-promise";
-import {mat4} from "gl-matrix"
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
+// import * as Hammer from "hammerjs"
+import "./webgl2-renderer.css"
 
 // import "webgl2"
 ///<reference path="../../../node_modules/@types/webgl2/index.d.ts" />
@@ -37,8 +37,10 @@ void main(){
 }
 `
 
-const HEIGHT = 720
-const WIDTH = 720
+const isMobile = window.innerWidth < 768
+
+const HEIGHT = isMobile ? window.innerWidth : 720
+const WIDTH = isMobile ? window.innerWidth : 720
 
 export default function WebglRenderer (props:Props){
 
@@ -57,7 +59,7 @@ export default function WebglRenderer (props:Props){
         const sub = fromEvent(window,'scroll').pipe(
             debounceTime(500)
         ).subscribe(e=>{
-            if(canvasRef.current){
+            if(canvasRef.current && window.innerWidth > 768){
                 const canvas = canvasRef.current
                 // const bcr = canvas.getBoundingClientRect()
                 canvas.style.top = window.scrollY + "px"
@@ -109,9 +111,22 @@ export default function WebglRenderer (props:Props){
             state.paused = !state.paused
         })
 
-        canvas.addEventListener("mousemove",(e)=>{
-            const offsetX = e.offsetX // * devicePixelRatio
-            const offsetY = HEIGHT - e.offsetY // * devicePixelRatio
+        // const hammer = new Hammer(canvas, {
+        //     enable:true,
+        //     recognizers:[
+        //         [Hammer.Pan],
+        //         [Hammer.Pinch],
+        //     ]
+        // })
+        // hammer.on("tap",e=>{
+        //     state.paused = !state.paused
+        // })
+        // hammer.on("pinch",e=>{
+        //     e.preventDefault()
+        //     state.zoom = e.scale
+        // })
+        
+        const updateMousePosition = (offsetX:number, offsetY:number)=>{
             const x =  (offsetX + state.translate[0]) / WIDTH * state.zoom * 2.0 - 1.0;
             const y =  (offsetY + state.translate[1]) / HEIGHT * state.zoom * 2.0 - 1.0;
             state.mouse[0] = x
@@ -123,7 +138,22 @@ export default function WebglRenderer (props:Props){
                 maximumFractionDigits:2,
                 minimumFractionDigits:2,
             })}`)
-        })
+        }
+
+        if(!isMobile){
+            canvas.addEventListener("mousemove",(e)=>{
+                const offsetX = e.offsetX // * devicePixelRatio
+                const offsetY = HEIGHT - e.offsetY // * devicePixelRatio
+                updateMousePosition(offsetX,offsetY)
+            })
+        }else{
+            // hammer.on("pan",e=>{
+            //     const offsetX = e.center.x - e.target.offsetLeft
+            //     const offsetY = HEIGHT - (e.center.y - e.target.offsetTop)
+            //     console.log(offsetX,offsetY, e.center.y, e.target.offsetTop)
+            //     updateMousePosition(offsetX,offsetY)
+            // })
+        }
     },[])
 
     React.useEffect(()=>{
@@ -273,10 +303,7 @@ export default function WebglRenderer (props:Props){
     const [magicNumberState,setMagicNumberState] = React.useState(params)
 
     return <>
-        <div style={{
-            width:`calc(100% - ${WIDTH}px)`,
-            display:"inline-block",
-        }}>
+        <div id="canvas-left">
             <p>raw webgl2</p>
             <div onChange={(e)=>{
                 const value = (e.target as HTMLInputElement).value
@@ -288,7 +315,7 @@ export default function WebglRenderer (props:Props){
                 <h4>shaders</h4>
                 {
                     shaders.map(x=>{
-                        return <label key={x}>
+                        return <label style={{display:"block"}} key={x}>
                             <input defaultChecked={fsName === x} type='radio' key={x} name="fsName" value={x} />
                             {x}
                         </label>
@@ -333,11 +360,7 @@ export default function WebglRenderer (props:Props){
                 setShader(e.currentTarget.innerText)
             }} />
         </div>
-        <div style={{
-            display:"inline-block",
-            width: WIDTH,
-            verticalAlign:"top",
-        }}>
+        <div id="canvas-right">
             <canvas style={{
                 position:'relative',
                 // background:"red",

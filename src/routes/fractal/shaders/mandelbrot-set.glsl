@@ -13,7 +13,7 @@ uniform float time;
 
 const float limit = 2.0;
 
-
+#include <complex>
 
 vec3 colorMapping(in float c, in float loop, in float maxIteration){
 

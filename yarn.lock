@@ -42,6 +42,11 @@
   resolved "https://registry.yarnpkg.com/@types/gl-matrix/-/gl-matrix-2.4.5.tgz#80630d88fb74ff8897a2a2855a8a700e6ee19d3e"
   integrity sha512-0L8Mq1+oaIW0oVzGUDbSW+HnTjCNb4CmoIQE5BkoHt/A7x20z0MJ1PnwfH3atty/vbWLGgvJwVu2Mz3SKFiEFw==
 
+"@types/hammerjs@^2.0.36":
+  version "2.0.36"
+  resolved "https://registry.yarnpkg.com/@types/hammerjs/-/hammerjs-2.0.36.tgz#17ce0a235e9ffbcdcdf5095646b374c2bf615a4c"
+  integrity sha512-7TUK/k2/QGpEAv/BCwSHlYu3NXZhQ9ZwBYpzr9tjlPIL2C5BeGhH3DmVavRx3ZNyELX5TLC91JTz/cen6AAtIQ==
+
 "@types/history@^4.7.2":
   version "4.7.2"
   resolved "https://registry.yarnpkg.com/@types/history/-/history-4.7.2.tgz#0e670ea254d559241b6eeb3894f8754991e73220"

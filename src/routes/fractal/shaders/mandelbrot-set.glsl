@@ -15,6 +15,11 @@ const float limit = 2.0;
 
 #include <complex>
 
+// better smoothing http://blog.hvidtfeldts.net/index.php/2011/08/distance-estimated-3d-fractals-ii-lighting-and-coloring/
+// float smooth =  float(iteration) 
+// + log(log(EscapeRadiusSquared))/log(Scale) 
+// - log(log(dot(z,z)))/log(Scale);
+
 vec3 colorMapping(in float c, in float loop, in float maxIteration){
 
     return mix(

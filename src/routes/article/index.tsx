@@ -3,17 +3,18 @@ import { usePromise } from "../../services/use-promise";
 import * as React from "react"
 import { useSearchParams, Anchor } from "../../services/router";
 import { ArticleList } from "./article-list";
+import RenderMarkdown from "./render-markdown"
 
 export default function Article(){
     const params = useSearchParams()
     const name = params.get("article")
-    const [text] = usePromise(async ()=>{
+    const [markdown] = usePromise(async ()=>{
         if(!name){
-            return null
+            return ""
         }
-        return marked( await fetch("/articles/"+name+".md").then(x=>x.text()))
+        return fetch("/articles/"+name+".md").then(x=>x.text())
     },[name])
-    if(!text){
+    if(!markdown){
         return <div>
             {
                 Object.keys(ArticleList).map(x=>{
@@ -22,7 +23,5 @@ export default function Article(){
             }
         </div>
     }
-    return <div dangerouslySetInnerHTML={{__html:text}}>
-    
-    </div>
+    return <RenderMarkdown src={markdown} />
 }

@@ -16,7 +16,7 @@ export default function Fractal(){
 
     const [edge,setEdge] = React.useState(3)
 
-    const [loop,setLoop] = React.useState(3)
+    const [loop,setLoop] = React.useState(6)
 
 
     React.useEffect(()=>{

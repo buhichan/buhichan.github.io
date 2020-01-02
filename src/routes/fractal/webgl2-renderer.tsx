@@ -1,9 +1,10 @@
 import * as React from "react"
-import { createWebgl2Program, AttrType } from "./webgl2-program";
+import { createWebgl2Program, AttrType } from "../../services/webgl/webgl2-program";
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 // import * as Hammer from "hammerjs"
 import "./webgl2-renderer.css"
+import { mat4, vec3 } from "gl-matrix";
 
 // import "webgl2"
 ///<reference path="../../../node_modules/@types/webgl2/index.d.ts" />
@@ -19,12 +20,14 @@ const shaders = [
     "burning-ship" as const,
     "julia-and-man" as const,
     "newton-fractal" as const,
+    "ray-marching" as const,
 ]
 
 const vertexShader = `#version 300 es
 precision highp float;
 uniform mat4 projectionMatrix;
-uniform mat4 modelViewMatrix;
+uniform mat4 modelMatrix;
+uniform mat4 viewMatrix;
 in vec3 position;
 in vec2 uv;
 out vec3 vPos;
@@ -33,7 +36,7 @@ out vec2 vUv;
 void main(){
     vPos = position;
     vUv = uv;
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
 }
 `
 
@@ -204,14 +207,19 @@ export default function WebglRenderer (props:Props){
 
             const elementArray =  makePlaneGeometryEBO(xSegments, ySegments)
 
-            // const projectionMatrix = mat4.create()
-            // const viewMatrix = mat4.create()
-            // const modelMatrix = mat4.create()
-            // const modelViewMatrix = mat4.create()
-            // mat4.perspective(projectionMatrix, Math.acos(WIDTH/HEIGHT)/2, WIDTH/HEIGHT, 0.1, 1000)
-            // mat4.lookAt(viewMatrix, [0,0,100], [0,0,0], [0,0,1])
-            // mat4.fromTranslation(modelMatrix, [50,50,100])
-            // mat4.multiply(modelViewMatrix, modelMatrix, viewMatrix)
+            const projectionMatrix = mat4.create()
+            mat4.perspective(projectionMatrix, Math.acos(WIDTH/HEIGHT)/2, WIDTH/HEIGHT, 0.1, 1000)
+
+            const cameraPosition = vec3.create()
+            vec3.normalize(cameraPosition,[50,50,50])
+            const cameraUp = vec3.create()
+            vec3.normalize(cameraPosition,[-1,-1,1])
+
+            const viewMatrix = mat4.create()
+            mat4.lookAt(viewMatrix, cameraPosition, [0,0,0], cameraUp)
+
+            const modelMatrix = mat4.create()
+            mat4.fromTranslation(modelMatrix, [0,0,0])
 
             setError(null)
             try{
@@ -221,18 +229,9 @@ export default function WebglRenderer (props:Props){
                     fsSource:fragmentShader,
                     vboData,
                     uniforms:{
-                        projectionMatrix:[
-                            2/xSegments, 0, 0, -1,
-                            0, 2/ySegments, 0, -1,
-                            0, 0, 1, -0.5,
-                            0, 0, 0, 1
-                        ],
-                        modelViewMatrix:[
-                            1, 0, 0, 0,
-                            0, 1, 0, 0,
-                            0, 0, 1, 0,
-                            0, 0, 0, 1
-                        ],
+                        projectionMatrix:projectionMatrix,
+                        modelMatrix,
+                        viewMatrix,
                         resolution: [WIDTH,HEIGHT],
                         time: 0,
                         params:  params,
@@ -304,7 +303,7 @@ export default function WebglRenderer (props:Props){
 
     return <>
         <div id="canvas-left">
-            <p>raw webgl2</p>
+            <p>一些看似复杂其实跟Hello World一样简单的东西, 没有用框架, 纯粹是为了学习webgl的API做的轮子. 编辑下面文本框中的代码可以直接更新图像.</p>
             <div onChange={(e)=>{
                 const value = (e.target as HTMLInputElement).value
                 setFsName(value as any)
@@ -312,7 +311,7 @@ export default function WebglRenderer (props:Props){
                 newURL.search = "?shader="+value
                 history.pushState(null,document.title,newURL.href)
             }}>
-                <h4>shaders</h4>
+                <h4>Shaders</h4>
                 {
                     shaders.map(x=>{
                         return <label style={{display:"block"}} key={x}>
@@ -323,7 +322,7 @@ export default function WebglRenderer (props:Props){
                 }
             </div>
             <div>
-                <h4>params</h4>
+                <h4>Parameters</h4>
                 {
                     params.map((x,i)=>{
                         return <label style={{display:"block"}} key={i}>
@@ -366,6 +365,8 @@ export default function WebglRenderer (props:Props){
                 // background:"red",
                 width: WIDTH,
                 height: HEIGHT,
+                top: 0,
+                transition:"top .4s ease",
                 // top:0,
             }} height={HEIGHT * devicePixelRatio} width={WIDTH * devicePixelRatio} ref={canvasRef} />
         </div>

@@ -27,10 +27,10 @@ header {
 }
 
 #content{
+    position: relative;
     margin-top:var(--topbar-height);
     right:0;
     overflow:auto;
-    position: relative;
     margin-left: var(--sidebar-width);
     padding: 8px 4px;
 }
@@ -73,10 +73,10 @@ input {
         position: relative;
         width: 100vw;
         height: auto;
-        display: none;
+        /* display: none; */
     }
     #content {
-        position: fixed;
+        /* position: fixed; */
         padding: 0 0px;
         left: 0;
         margin-left: 0;

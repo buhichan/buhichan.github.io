@@ -1,10 +1,11 @@
 import * as React from "react"
-import { createWebgl2Program, AttrType } from "../../services/webgl/webgl2-program";
+import { createWebgl2Program, AttrType } from "../../services/webgl/program";
 import { fromEvent } from "rxjs";
 import { debounceTime } from "rxjs/operators";
 // import * as Hammer from "hammerjs"
 import "./webgl2-renderer.css"
 import { mat4, vec3 } from "gl-matrix";
+import { createWebgl2BufferObject } from "../../services/webgl/buffer";
 
 // import "webgl2"
 ///<reference path="../../../node_modules/@types/webgl2/index.d.ts" />
@@ -13,14 +14,17 @@ type Props = {
 
 }
 
-const shaders = [
-    "mandelbrot-set" as const,
-    "julia-set" as const,
-    // "candle-flame" as const,
-    "burning-ship" as const,
-    "julia-and-man" as const,
-    "newton-fractal" as const,
-    "ray-marching" as const,
+enum ShaderType {
+    twod,
+    threed,
+}
+const shaders:[string, ShaderType][] = [
+    ["mandelbrot-set" as const, ShaderType.twod],
+    ["julia-set" as const, ShaderType.threed],
+    ["burning-ship" as const, ShaderType.twod],
+    ["julia-and-man" as const, ShaderType.twod],
+    ["newton-fractal" as const,ShaderType.twod],
+    ["ray-tracing" as const,ShaderType.threed],
 ]
 
 const vertexShader = `#version 300 es
@@ -40,7 +44,7 @@ void main(){
 }
 `
 
-const isMobile = window.innerWidth < 768
+const isMobile = window.innerWidth < 1068
 
 const HEIGHT = isMobile ? window.innerWidth : 720
 const WIDTH = isMobile ? window.innerWidth : 720
@@ -53,9 +57,10 @@ export default function WebglRenderer (props:Props){
 
     const coordinateDisplayRef = React.useRef<HTMLSpanElement>()
 
-    const [fsName,setFsName] = React.useState(()=>{
+    const [fsName,setShaderName] = React.useState(()=>{
         const urlSearch = new URLSearchParams(location.search)
-        return urlSearch.get("shader") || shaders[0]
+        const urlShader = urlSearch.get("shader");
+        return urlShader || shaders[0][0]
     })
 
     React.useEffect(()=>{
@@ -93,25 +98,38 @@ export default function WebglRenderer (props:Props){
 
     React.useEffect(()=>{
         const canvas = canvasRef.current as HTMLCanvasElement
+        const subs = []
+        const shaderConfig = shaders.find(x=>x[0] === fsName)
+        const shaderType = shaderConfig && shaderConfig[1] || ShaderType.twod
 
-        canvas.addEventListener("wheel",(e)=>{
+        const onwheel = (e:MouseWheelEvent)=>{
             e.preventDefault()
             e.stopPropagation()
             if(e.ctrlKey){
                 const offsetX = e.offsetX  //* devicePixelRatio
                 const offsetY = (HEIGHT - e.offsetY) // * devicePixelRatio
                 const factor = ( 100 + e.deltaY ) / 100 
-                state.translate[0] = (state.translate[0] + offsetX) / factor - offsetX
-                state.translate[1] = (state.translate[1] + offsetY) / factor - offsetY
+                if(shaderType === ShaderType.twod){
+                    state.translate[0] = (state.translate[0] + offsetX) / factor - offsetX
+                    state.translate[1] = (state.translate[1] + offsetY) / factor - offsetY
+                }
                 state.zoom *= factor
             }else{
                 state.translate[0] += e.deltaX 
                 state.translate[1] -= e.deltaY 
             }
+        }
+        canvas.addEventListener("wheel",onwheel)
+        subs.push(()=>{
+            canvas.removeEventListener("wheel", onwheel)
         })
 
-        canvas.addEventListener("click",()=>{
+        const onclick = ()=>{
             state.paused = !state.paused
+        }
+        canvas.addEventListener("click",onclick)
+        subs.push(()=>{
+            canvas.removeEventListener("click", onclick)
         })
 
         // const hammer = new Hammer(canvas, {
@@ -143,21 +161,31 @@ export default function WebglRenderer (props:Props){
             })}`)
         }
 
-        if(!isMobile){
-            canvas.addEventListener("mousemove",(e)=>{
-                const offsetX = e.offsetX // * devicePixelRatio
-                const offsetY = HEIGHT - e.offsetY // * devicePixelRatio
-                updateMousePosition(offsetX,offsetY)
-            })
-        }else{
-            // hammer.on("pan",e=>{
-            //     const offsetX = e.center.x - e.target.offsetLeft
-            //     const offsetY = HEIGHT - (e.center.y - e.target.offsetTop)
-            //     console.log(offsetX,offsetY, e.center.y, e.target.offsetTop)
-            //     updateMousePosition(offsetX,offsetY)
-            // })
+        const onpointermove = (e:PointerEvent)=>{
+            const offsetX = e.offsetX // * devicePixelRatio
+            const offsetY = HEIGHT - e.offsetY // * devicePixelRatio
+            updateMousePosition(offsetX,offsetY)
         }
-    },[])
+        const onpointerenter = (e:PointerEvent)=>{
+            canvas.setPointerCapture(e.pointerId)
+        }
+        const onpointerleave = (e:PointerEvent)=>{
+            canvas.releasePointerCapture(e.pointerId)
+        }
+        canvas.addEventListener("pointerenter",onpointerenter)
+        canvas.addEventListener("pointerleave",onpointerleave)
+        canvas.addEventListener("pointermove",onpointermove)
+        subs.push(()=>{
+            canvas.removeEventListener("pointerenter",onpointerenter)
+            canvas.removeEventListener("pointerleave",onpointerleave)
+            canvas.removeEventListener("pointermove",onpointermove)
+        })
+
+        return ()=>{
+            subs.forEach(x=>x())
+        }
+
+    },[fsName])
 
     React.useEffect(()=>{
         const canvas = canvasRef.current as HTMLCanvasElement
@@ -182,8 +210,8 @@ export default function WebglRenderer (props:Props){
 
             // const xSegments = Math.floor(WIDTH / 100)
             // const ySegments = Math.floor(HEIGHT / 100)
-            const xSegments = 1
-            const ySegments = 1
+            const xSegments = 10
+            const ySegments = 10
 
             const vertexNumber = (xSegments + 1) * (ySegments + 1);
 
@@ -205,7 +233,9 @@ export default function WebglRenderer (props:Props){
                 }
             }
 
-            const elementArray =  makePlaneGeometryEBO(xSegments, ySegments)
+            const eboData =  makePlaneGeometryEBO(xSegments, ySegments)
+
+            //TODO is Here
 
             const projectionMatrix = mat4.create()
             mat4.perspective(projectionMatrix, Math.acos(WIDTH/HEIGHT)/2, WIDTH/HEIGHT, 0.1, 1000)
@@ -221,24 +251,25 @@ export default function WebglRenderer (props:Props){
             const modelMatrix = mat4.create()
             mat4.fromTranslation(modelMatrix, [0,0,0])
 
+            const result = mat4.create()
+
+            mat4.multiply(result, viewMatrix, modelMatrix)
+            mat4.multiply(result, projectionMatrix, result)
+
+            console.log(`[\n${result.slice(0,4)}\n${result.slice(4,8)}\n${result.slice(8,12)}\n${result.slice(12,16)}\n]`)
+
             setError(null)
             try{
+                const bo = createWebgl2BufferObject({
+                    gl,
+                    vboData,
+                    eboData,
+                })
+
                 const program = createWebgl2Program({
                     gl,
                     vsSource:vertexShader,
                     fsSource:fragmentShader,
-                    vboData,
-                    uniforms:{
-                        projectionMatrix:projectionMatrix,
-                        modelMatrix,
-                        viewMatrix,
-                        resolution: [WIDTH,HEIGHT],
-                        time: 0,
-                        params:  params,
-                        zoom: state.zoom,
-                        translate: state.translate,
-                        mouse:state.mouse,
-                    },
                     attributes:{
                         position:{
                             type: AttrType.float,
@@ -253,7 +284,35 @@ export default function WebglRenderer (props:Props){
                             offset: Float32Array.BYTES_PER_ELEMENT * 3,
                         }
                     },
-                    eboData: elementArray,
+                    uniforms:{
+                        // projectionMatrix:projectionMatrix,
+                        // modelMatrix,
+                        // viewMatrix,
+                        projectionMatrix:[
+                            2/xSegments, 0, 0, -1,
+                            0, 2/ySegments, 0, -1,
+                            0, 0, 1, -0.5,
+                            0, 0, 0, 1
+                        ],
+                        viewMatrix:[
+                            1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1
+                        ],
+                        modelMatrix:[
+                            1, 0, 0, 0,
+                            0, 1, 0, 0,
+                            0, 0, 1, 0,
+                            0, 0, 0, 1
+                        ],
+                        resolution: [WIDTH,HEIGHT],
+                        time: 0,
+                        params:  params,
+                        zoom: state.zoom,
+                        translate: state.translate,
+                        mouse:state.mouse,
+                    },
                 })
 
 
@@ -261,6 +320,10 @@ export default function WebglRenderer (props:Props){
                 let totalPauseTime = 0
 
                 program.bind()
+                
+                bo.bind()
+                
+                program.init()
 
                 let isFirstLoop = true
 
@@ -277,7 +340,7 @@ export default function WebglRenderer (props:Props){
                         program.uniforms.mouse = state.mouse
                     }
                     lastRenderTime = timeValue
-                    program.draw(gl.TRIANGLES)
+                    program.draw(gl.TRIANGLES,bo)
                     if(isFirstLoop){
                         const buf = new Uint8Array(4)
                         gl.readPixels(0,0,1,1,gl.RGBA,gl.UNSIGNED_BYTE,buf)
@@ -289,7 +352,8 @@ export default function WebglRenderer (props:Props){
                 let animeHandle = requestAnimationFrame(loop)
                 return ()=>{
                     cancelAnimationFrame(animeHandle)
-                    program.unbind()
+                    program.dispose()
+                    bo.dispose()
                 }
             }catch(e){
                 setError(e)
@@ -305,17 +369,19 @@ export default function WebglRenderer (props:Props){
         <div id="canvas-left">
             <p>一些看似复杂其实跟Hello World一样简单的东西, 没有用框架, 纯粹是为了学习webgl的API做的轮子. 编辑下面文本框中的代码可以直接更新图像.</p>
             <div onChange={(e)=>{
-                const value = (e.target as HTMLInputElement).value
-                setFsName(value as any)
+                const el = (e.target as HTMLInputElement);
+                const shader = el.value as any;
+                setShaderName(shader)
                 const newURL = new URL(location.href)
-                newURL.search = "?shader="+value
+                newURL.search = "?shader="+shader
                 history.pushState(null,document.title,newURL.href)
             }}>
                 <h4>Shaders</h4>
                 {
                     shaders.map(x=>{
-                        return <label style={{display:"block"}} key={x}>
-                            <input defaultChecked={fsName === x} type='radio' key={x} name="fsName" value={x} />
+                        const [name] = x
+                        return <label style={{display:"block"}} key={name}>
+                            <input defaultChecked={fsName === name} type='radio' key={name} name="fsName" value={name} />
                             {x}
                         </label>
                     })

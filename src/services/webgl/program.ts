@@ -1,3 +1,4 @@
+import {BufferObject} from "./buffer"
 
 type GLSizeOrData = number | Int8Array | Int16Array | Int32Array | Uint8Array | Uint16Array |
 Uint32Array | Uint8ClampedArray | Float32Array | Float64Array | DataView | ArrayBuffer | null
@@ -8,10 +9,8 @@ type ProgramOptions<Attributes extends string, Uniforms extends string> = {
     gl:WebGL2RenderingContext,
     vsSource:string,
     fsSource:string,
-    uniforms:Record<Uniforms,number|number[]|Float32Array>,
-    vboData:ArrayBufferView,
-    eboData:ArrayBufferView,
     attributes:Record<Attributes,AttributeDefinition>
+    uniforms:Record<Uniforms,number|number[]|Float32Array>,
 }
 
 const shaderChunks = {
@@ -27,16 +26,24 @@ function shaderPreprocessor(source:string){
     })
 }
 
+function createShaderError(source:string, errLog:string){
+    const matches = errLog.match(/^ERROR\: (\d+)\:(\d+)\:/)
+    if(matches){
+        const splitedSource = source.split(/\n/g)
+        const errPos = Number(matches[2])
+        console.log(errPos, splitedSource.slice(errPos-1, errPos+1).join("\n"))
+    }
+    return new Error(errLog)
+}
+
 export function createWebgl2Program<Attributes extends string, Uniforms extends string>(options:ProgramOptions<Attributes,Uniforms>){
 
     const {
         gl,
         vsSource,
         fsSource,
-        uniforms,
-        vboData,
-        eboData,
         attributes,
+        uniforms,
     } = options
 
     const program = gl.createProgram()
@@ -55,7 +62,7 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
         const errLog = gl.getShaderInfoLog(vs)
         gl.deleteShader(vs)
         if(errLog){
-            throw new Error(errLog)
+            throw createShaderError(vsSource, errLog)
         }
     }
 
@@ -64,7 +71,7 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
         const errLog = gl.getShaderInfoLog(fs)
         gl.deleteShader(fs)
         if(errLog){
-            throw new Error(errLog)
+            throw createShaderError(fsSource, errLog)
         }
     }
 
@@ -79,10 +86,12 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
 
     gl.useProgram(program)
     
+    const vao = gl.createVertexArray()
+
     // gl.enable(gl.SAMPLE_COVERAGE);
     // gl.sampleCoverage(1, false);
 
-    console.log(gl.getError())
+    // console.log(gl.getError())
 
     // const attrs:Map<string,AttributeDefinition> = new Map()
     // function addAttribute(name:string,type:AttrType,size:1|2|3|4,stride:number,offset:number){
@@ -103,22 +112,18 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
         setUniformByValue(gl,name,value)
     }
 
-    const vao = gl.createVertexArray()
+    function init(){
 
-    const vbo = gl.createBuffer()
-    const elementArrayBuffer = gl.createBuffer()
-
-    let vaoInitialized = false
-    function initDraw(){
+        //init draw
         gl.clearColor(1, 1, 1, 1);
         gl.enable(gl.BLEND)
         gl.enable(gl.CULL_FACE)
         gl.enable(gl.DEPTH_TEST)
         gl.cullFace(gl.BACK)
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+        //init vao
         gl.bindVertexArray(vao)
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,elementArrayBuffer)
-        gl.bufferData(gl.ELEMENT_ARRAY_BUFFER,eboData, gl.STATIC_DRAW)
         for(let name in attributes){
             const attr = attributes[name]
             attr.location = attr.location || gl.getAttribLocation(program, name)
@@ -127,50 +132,32 @@ export function createWebgl2Program<Attributes extends string, Uniforms extends 
         }
     }
 
-    function updateVBO(){
-        gl.bindBuffer(gl.ARRAY_BUFFER,vbo)
-        gl.bufferData(gl.ARRAY_BUFFER, vboData, gl.STATIC_DRAW)
-    }
-
-    updateVBO()
-
-    function bind(){
-        gl.bindBuffer(gl.ARRAY_BUFFER,vbo)
-        gl.bindVertexArray(vao)
-    }
-
-    function unbind(){
-        gl.bindBuffer(gl.ARRAY_BUFFER,null)
-        gl.bindVertexArray(null)
-    }
-
-    function draw(mode:DrawMode){
-        if(!vaoInitialized){
-            initDraw()
-            vaoInitialized = true
-        }
+    function draw(mode:DrawMode, bufferObject: BufferObject){
         gl.clear(gl.DEPTH_BUFFER_BIT)
         gl.clear(gl.COLOR_BUFFER_BIT)
-        gl.drawElements(mode,eboData.byteLength,gl.UNSIGNED_BYTE,0)
+        gl.drawElements(mode,bufferObject.byteLength,gl.UNSIGNED_BYTE,0)
     }
         
     return {
         program,
-        bind,
-        unbind,
         draw,
+        bind(){
+            gl.useProgram(program)
+            gl.bindVertexArray(vao)
+        },
+        unbind(){
+            gl.bindVertexArray(null)
+        },
+        init,
         uniforms: new Proxy(uniforms, {
-            set(target, key: Uniforms, value: number|number[]){
+            set(_target, key: Uniforms, value: number|number[]){
                 setUniformByValue(gl,key,value)
                 return true
             }
         }),
-        vboData,
-        updateVBO,
-        destroy(){
-            gl.deleteBuffer(vbo)
-            gl.deleteVertexArray(vao)
+        dispose(){
             gl.deleteProgram(program)
+            gl.deleteVertexArray(vao)
         }
     }
 }

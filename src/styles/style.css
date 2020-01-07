@@ -10,7 +10,7 @@
 }
 
 * {
-    box-sizing: content-box;
+    box-sizing: border-box;
 }
 
 header {
@@ -68,7 +68,7 @@ input {
     min-width: 100px;
 }
 
-@media (max-width: 768px){
+@media (max-width: 1068px){
     #sidebar {
         position: relative;
         width: 100vw;

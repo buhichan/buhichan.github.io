@@ -100,3 +100,7 @@ Suspense一开始是作为跟React.lazy配合的code splitting方案, 然而当�
 - workLoop外面的try catch会捕获到这个render phase的错误, 然后交给[handleError](https://github.com/facebook/react/blob/master/packages/react-reconciler/src/ReactFiberWorkLoop.js#L1279)处理
     - 如果发现这个是一个Promise(thenable), 则会沿着 fiber.return 往上一直找到一个Suspense, 然后把这个promise添加到suspense的updateQueue(是个Set)里面, 然后重新从这个Suspense渲染, 当然这里会得到一个fallback的Suspense.
     
+
+## Expiration
+
+TODO

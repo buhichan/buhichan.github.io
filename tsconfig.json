@@ -2,9 +2,10 @@
     "compilerOptions": {
         "moduleResolution": "node",
         "target": "esnext",
-        "module": "commonjs",
+        "module": "ESNext",
         "lib": ["dom","scripthost","esnext.bigint"],
-        "jsx": "react"
+        "jsx": "react",
+        "outDir": "build"
     },
     "include": ["src"]
 }

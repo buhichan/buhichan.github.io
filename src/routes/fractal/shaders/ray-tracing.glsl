@@ -26,7 +26,7 @@ const float PI = 3.1415926;
 vec3 lightSource(vec3 normal, vec3 reflectPoint, vec3 reflectDirection, vec3 lightColor, vec3 lightPosition){
     float diffuseFactor = .52;
     float specularFactor = .6 + params.z / 10.0;
-    float shininess = 10.0;
+    float shininess = 50.0;
     vec3 direction = normalize( lightPosition - reflectPoint );
     vec3 diffuse = diffuseFactor * clamp(dot(direction, normal), 0.0, 1.0) * lightColor;
     vec3 specular = specularFactor * pow( clamp( dot(direction, reflectDirection), 0.0, 1.0), shininess) * lightColor;
@@ -42,60 +42,45 @@ vec3 phongModel(vec3 materialColor, vec3 normal, vec3 reflectPoint, vec3 reflect
         reflectPoint, 
         reflectDirection, 
         vec3(1.0,1.0,1.0), 
-        vec3(.0,-10.0,-20.0)
+        vec3(.0,10.0,20.0)
+    ) + lightSource(
+        normal, 
+        reflectPoint, 
+        reflectDirection, 
+        vec3(1.0,1.0,1.0), 
+        vec3(.0,-50.0,-20.0)
     );
 }
 
-// mandelbulb de
-// http://blog.hvidtfeldts.net/index.php/category/mandelbulb/
-// const int Iterations = 50;
-// const float Bailout = 50.0;
-// const float Power = 2.0;
-// float distanceEstimator(vec3 pos) {
-// 	vec3 z = pos;
-// 	float dr = 1.0;
-// 	float r = 0.0;
-// 	for (int i = 0; i < Iterations ; i++) {
-// 		r = length(z);
-// 		if (r>Bailout) break;
-		
-// 		// convert to polar coordinates
-// 		float theta = acos(z.z/r);
-// 		float phi = atan(z.y,z.x);
-// 		dr =  pow( r, Power-1.0)*Power*dr + 1.0;
-		
-// 		// scale and rotate the point
-// 		float zr = pow( r,Power);
-// 		theta = theta*Power;
-// 		phi = phi*Power;
-		
-// 		// convert back to cartesian coordinates
-// 		z = zr*vec3(sin(theta)*cos(phi), sin(phi)*sin(theta), cos(theta));
-// 		z+=pos;
-// 	}
-// 	return 0.5*log(r)*r/dr;
-// }
-
 // sphere DE
-float distanceEstimator(vec3 point){
-    vec3 center = vec3(0.0,0.0,0.0);
-    float dist = length(point - center);
-    float radius = 10.0;
-    float theta =  atan(point.x, point.y);
-    float phi = atan(point.z, length(point.xy));
-    return dist - radius;
-}
+// float distanceEstimator(vec3 point){
+//     vec3 center = vec3(0.0,0.0,0.0);
+//     float dist = length(point - center);
+//     float radius = 10.0;
+//     float theta =  atan(point.x, point.y);
+//     float phi = atan(point.z, length(point.xy));
+//     return dist - radius;
+// }
 
 // cube DE
 // float distanceEstimator(vec3 point){
 //     float radius = 5.0;
 //     // return ;
 //     vec3 dist = max(abs(point) - radius, 0.0);
-//     return dist.x + dist.y + dist.z;
+//     return length(dist);
 // }
 
-const int MAX_LOOP = 50;
-const float EPSILON = 0.005;
+// cylinder DE
+float distanceEstimator(vec3 point){
+    float d1 = max(0.0, length(point.xy) - 5.0);
+    float d2 = max(0.0, abs(point.z) - 5.0);
+    return length(vec2(d1,d2));
+}
+
+
+const int MAX_LOOP = 150;
+const float EPSILON = 0.001;
+const float FAR = 50.0;
 vec4 rayTracingUsingDistanceEstimator(vec3 rayOrigin, vec3 rayDirection, out vec3 reflectPoint, out vec3 reflectDirection){
     vec3 curPoint = rayOrigin;
     for(int i = 0; i < MAX_LOOP; i++){
@@ -110,6 +95,7 @@ vec4 rayTracingUsingDistanceEstimator(vec3 rayOrigin, vec3 rayDirection, out vec
             reflectPoint = curPoint;
             reflectDirection = normalize(2.0 * dot(rayOrigin - reflectPoint, normal) * normal - (rayOrigin - reflectPoint));
             vec3 materialColor = sign(normal);
+            // vec3 materialColor = vec3(0.0,0.0,0.0);
             return vec4(
                 phongModel(
                     materialColor,
@@ -119,10 +105,10 @@ vec4 rayTracingUsingDistanceEstimator(vec3 rayOrigin, vec3 rayDirection, out vec
                 ),
                 1.0
             );
-        }else if(curDist > 50.0){
+        }else if(curDist > FAR){
             break;
         }else{
-            curPoint = curPoint + rayDirection * curDist;
+            curPoint = curPoint + 0.5 * rayDirection * curDist;
         }
     }
     return vec4(0.0,0.0,0.0,0.0);
@@ -177,6 +163,15 @@ void main(){
     float far = 100.0;
     //相机的位置用极坐标表示.
     //这里其实可以把相机的旋转用四元数表示
+    //matQuaternionRot [0][0] = ux*ux*oneC + cosA;
+    // matQuaternionRot [0][1] = ux*uy*oneC - uz*sinA;
+    // matQuaternionRot [0][2] = ux*uz*oneC + uy*sinA;
+    // matQuaternionRot [1][0] = uy*ux*oneC + uz*sinA;
+    // matQuaternionRot [1][1] = uy*uy*oneC + cosA;
+    // matQuaternionRot [1][2] = uy*uz*oneC - ux*sinA;
+    // matQuaternionRot [2][0] = uz*ux*oneC - uy*sinA;
+    // matQuaternionRot [2][1] = uz*uy*oneC + ux*sinA;
+    // matQuaternionRot [2][2] = uz*uz*oneC + cosA;
 
     float theta = translate.x / 100.0;
     float phi = translate.y / 100.0;

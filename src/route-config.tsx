@@ -34,7 +34,7 @@ export const routes:IRoute[] = [
         component:React.lazy(()=>import("./routes/article")),
     },{
         path:"/demos",
-        name:"一些Demo",
+        name:"一些小玩意儿",
         component:React.lazy(()=>import("./routes/demos")),
         children:[
             {
@@ -53,6 +53,10 @@ export const routes:IRoute[] = [
                 path:"/virtual-scroll-demo",
                 name:"VirtualScrollDemo",
                 component:React.lazy(()=>import("./routes/demos/virtual-scroll-demo")),
+            },{
+                path:"/114514-calculator",
+                name:"114514 Calculator",
+                component:React.lazy(()=>import("./routes/demos/114514")),
             }
         ]
     }

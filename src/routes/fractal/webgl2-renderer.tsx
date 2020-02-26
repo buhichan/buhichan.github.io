@@ -382,7 +382,7 @@ export default function WebglRenderer (props:Props){
                         const [name] = x
                         return <label style={{display:"block"}} key={name}>
                             <input defaultChecked={fsName === name} type='radio' key={name} name="fsName" value={name} />
-                            {x}
+                            {name}
                         </label>
                     })
                 }
@@ -419,10 +419,20 @@ export default function WebglRenderer (props:Props){
                 color:"#80ff80",
                 padding: 15,
                 borderRadius: 10,
+                fontSize: 12,
+                fontFamily:"Menlo, Monaco, 'Courier New', monospace",
             }} contentEditable onFocus={e=>{
 
             }} onInput={e=>{
-                setShader(e.currentTarget.innerText)
+                if(e.target['timer']){
+                    clearTimeout(e.target['timer'])
+                    e.target['timer']=null
+                }else{
+                    e.target['timer']=setTimeout(()=>{
+                        setShader(e.currentTarget.innerText) 
+                    }, 2000)
+                }
+                
             }} />
         </div>
         <div id="canvas-right">

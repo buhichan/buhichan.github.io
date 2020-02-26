@@ -2,7 +2,7 @@ import * as React from "react"
 
 const phases = ["🌑","🌒","🌓","🌔","🌕","🌖","🌗","🌘"]
 
-const root:HTMLMainElement = document.getElementById("root")
+// const root:HTMLDivElement = document.getElementById("root")
 
 // const pixelSize = 2
 

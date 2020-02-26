@@ -14,7 +14,7 @@ const compiler = webpack({
     output:{
         path:path.resolve("./dist"),
         ...process.env.NODE_ENV === 'production' ? {
-            publicPath:"/dist",
+            publicPath:"/dist/",
             filename: "[name].[chunkhash].js",
             chunkFilename: '[name].[chunkhash].js'
         } : {

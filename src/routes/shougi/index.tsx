@@ -105,7 +105,9 @@ export default function Shougi (props:Props){
                 {
                     board.komadai[Faction.Ou].map((x,i)=>{
                         return <button onClick={()=>{
-                            setUchiKomu(x)
+                            if(turn === Faction.Ou){
+                                setUchiKomu(x)
+                            }
                         }} key={i}>{x.name}</button>
                     })
                 }
@@ -115,7 +117,9 @@ export default function Shougi (props:Props){
                 {
                     board.komadai[Faction.Gyou].map((x,i)=>{
                         return <button onClick={()=>{
-                            setUchiKomu(x)
+                            if(turn === Faction.Gyou){
+                                setUchiKomu(x)
+                            }
                         }} key={i}>{x.name}</button>
                     })
                 }

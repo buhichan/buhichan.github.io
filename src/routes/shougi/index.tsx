@@ -99,11 +99,11 @@ export default function Shougi (props:Props){
             }
         </div>
         <div>
-            墓地:
+            驹台:
             <div style={{width: 50 * MAX_SIZE / 2, display:"inline-block"}}>
                 王:
                 {
-                    board.tomb[Faction.Ou].map((x,i)=>{
+                    board.komadai[Faction.Ou].map((x,i)=>{
                         return <button onClick={()=>{
                             setUchiKomu(x)
                         }} key={i}>{x.name}</button>
@@ -113,7 +113,7 @@ export default function Shougi (props:Props){
             <div style={{width: 50 * MAX_SIZE / 2, display:"inline-block"}}>
                 玉:
                 {
-                    board.tomb[Faction.Gyou].map((x,i)=>{
+                    board.komadai[Faction.Gyou].map((x,i)=>{
                         return <button onClick={()=>{
                             setUchiKomu(x)
                         }} key={i}>{x.name}</button>

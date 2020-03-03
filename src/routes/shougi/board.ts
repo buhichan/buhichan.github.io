@@ -4,14 +4,14 @@ import { Koma, Kyousha, Keiba, Ginshou, Kinshou, Oushou, Kakugyou, Fuhyou, Hisha
 
 
 export class Board {
-    tomb = {
+    komadai = {
         [Faction.Gyou]: [] as Koma[],
         [Faction.Ou]:[] as Koma[],
     }
     board = [] as Koma[]
     init(){
-        this.tomb[Faction.Gyou] = []
-        this.tomb[Faction.Ou] = []
+        this.komadai[Faction.Gyou] = []
+        this.komadai[Faction.Ou] = []
         
         this.board = new Array(MAX_SIZE * MAX_SIZE).fill(null);
         this.board.splice(0, MAX_SIZE, 
@@ -67,12 +67,14 @@ export class Board {
         return this.board[coord.y * MAX_SIZE + coord.x]
     }
     private killKoma(coord: Coord): Koma{
-        const koma = this.board[coord.y * MAX_SIZE + coord.x];
+        let koma = this.board[coord.y * MAX_SIZE + coord.x];
         if(!koma){
             throw new Error("Illegal Move!")
         }
         delete this.board[coord.y * MAX_SIZE + coord.x];
-        this.tomb[koma.faction].push(koma)
+        koma = koma.downgrade()
+        koma.faction = koma.faction === Faction.Gyou ? Faction.Ou : Faction.Gyou;
+        this.komadai[koma.faction].push(koma)
         return koma
     }
     private moveKoma(from: Coord, to:Coord){
@@ -104,15 +106,15 @@ export class Board {
             case move instanceof MoveUchikomu:{
                 mayUpgrade = false;
                 const coord = move.to;
-                const revived = move.koma;
+                const uchikomud = move.koma;
                 if(!!this.board[coord.y * MAX_SIZE + coord.x]){
                     throw new Error("Invalid Action")
                 }
-                const komaIndex = this.tomb[revived.faction].findIndex(x=>x.kind === revived.kind)
+                const komaIndex = this.komadai[uchikomud.faction].findIndex(x=>x.kind === uchikomud.kind)
                 if(komaIndex === -1){
                     throw new Error("Invalid Action")
                 }
-                const [koma] = this.tomb[revived.faction].splice(komaIndex, 1)
+                const [koma] = this.komadai[uchikomud.faction].splice(komaIndex, 1)
                 this.board[coord.y * MAX_SIZE + coord.x] = koma
                 break;
             }

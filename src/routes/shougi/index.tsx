@@ -127,7 +127,7 @@ export default function Shougi (props:Props){
 function KomaDisplay({koma}:{koma:Koma}){
     const name = koma.name
     return <svg width={50} height={50} viewBox="0 0 50 50">
-        <path stroke="#000" fill="#0000" d="M 5, 45 L 45, 45 L 40, 15 L 25 5 L 10, 15 L 5, 45" />
+        <path stroke="#000" fill="transparent" d="M 5, 45 L 45, 45 L 40, 15 L 25 5 L 10, 15 L 5, 45" />
         <text textAnchor="middle" fontSize={16} x={25} y={24}>
             {name[0]}
         </text>

@@ -1,1 +1,0 @@
-/Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/target/wasm32-unknown-unknown/release/rust_test.wasm: /Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/src/iiyokoiyo_calculator.rs /Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/src/lib.rs

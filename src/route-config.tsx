@@ -57,7 +57,11 @@ export const routes:IRoute[] = [
                 path:"/114514-calculator",
                 name:"114514 Calculator",
                 component:React.lazy(()=>import("./routes/demos/114514")),
-            }
+            },{
+                path:"/shouki",
+                name:"将棋",
+                component:React.lazy(()=>import("./routes/shougi")),
+            },
         ]
     }
 ]

@@ -103,8 +103,9 @@ fn get_permutations(comb: Combinations, target: f32) -> Option<Combinations> {
                     new_num = left / right
                 },
                 Op::Concat => {
-                    new_display_item = EquationDisplay::Numeric(left * 10f32 + right);
-                    new_num = left * 10f32 + right
+                    let digits = 10f32.powf(right.log10().ceil());
+                    new_display_item = EquationDisplay::Numeric(left * digits + right);
+                    new_num = left * digits + right
                 },
                 // Op::Dot => {
                 //     new_display_item = EquationDisplay::Numeric(left + right / right.log10() );

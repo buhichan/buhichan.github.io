@@ -8,6 +8,8 @@ type Props = {
 
 }
 
+const CELL_WIDTH = Math.min(window.innerWidth / 9, 50);
+
 export default function Shougi (props:Props){
 
     const [selected, setSelected] = React.useState(null as null | Coord)
@@ -34,7 +36,7 @@ export default function Shougi (props:Props){
         <p>
             当前回合: 「{turn === Faction.Ou ? "王将" : "玉将"}」
         </p>
-        <div style={{width: 50 * MAX_SIZE }}>
+        <div style={{width: CELL_WIDTH  * MAX_SIZE }}>
             {
                 new Array(MAX_SIZE).fill(0).map((_,revI)=>{
                     const i = MAX_SIZE - 1 - revI
@@ -80,8 +82,8 @@ export default function Shougi (props:Props){
                                     display:"inline-flex", 
                                     border:".5px solid #999", 
                                     cursor:"pointer", 
-                                    width: 50, 
-                                    height:50, 
+                                    width: CELL_WIDTH , 
+                                    height:CELL_WIDTH , 
                                     transform: koma && koma.faction === Faction.Gyou ? "rotate(180deg)" : undefined,
                                     justifyContent:"center", 
                                     alignItems:"center",
@@ -99,8 +101,8 @@ export default function Shougi (props:Props){
             }
         </div>
         <div>
-            驹台:
-            <div style={{width: 50 * MAX_SIZE / 2, display:"inline-block"}}>
+            <p>驹台:</p>
+            <div style={{width: CELL_WIDTH  * MAX_SIZE / 2, display:"inline-block"}}>
                 王:
                 {
                     board.komadai[Faction.Ou].map((x,i)=>{
@@ -112,7 +114,7 @@ export default function Shougi (props:Props){
                     })
                 }
             </div>
-            <div style={{width: 50 * MAX_SIZE / 2, display:"inline-block"}}>
+            <div style={{width: CELL_WIDTH  * MAX_SIZE / 2, display:"inline-block"}}>
                 玉:
                 {
                     board.komadai[Faction.Gyou].map((x,i)=>{
@@ -130,7 +132,7 @@ export default function Shougi (props:Props){
 
 function KomaDisplay({koma}:{koma:Koma}){
     const name = koma.name
-    return <svg width={50} height={50} viewBox="0 0 50 50">
+    return <svg width={CELL_WIDTH} height={CELL_WIDTH} viewBox="0 0 50 50">
         <path stroke="#000" fill="transparent" d="M 5, 45 L 45, 45 L 40, 15 L 25 5 L 10, 15 L 5, 45" />
         <text textAnchor="middle" fontSize={16} x={25} y={24}>
             {name[0]}

@@ -10,7 +10,7 @@ type Props = {
 
 const CELL_WIDTH = Math.min(window.innerWidth / 9, 50);
 
-export default function Shougi (props:Props){
+export default function Shogi (props:Props){
 
     const [selected, setSelected] = React.useState(null as null | Coord)
 

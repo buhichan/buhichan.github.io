@@ -58,9 +58,9 @@ export const routes:IRoute[] = [
                 name:"114514 Calculator",
                 component:React.lazy(()=>import("./routes/demos/114514")),
             },{
-                path:"/shouki",
+                path:"/shogi",
                 name:"将棋",
-                component:React.lazy(()=>import("./routes/shougi")),
+                component:React.lazy(()=>import("./routes/shogi")),
             },
         ]
     }

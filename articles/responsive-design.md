@@ -36,6 +36,7 @@ mql.addListener(update)
     <source srcset="/media/examples/surfer-240-200.jpg" media="(min-width: 800px)">
     <img src="/media/examples/painted-hand-298-332.jpg" />
 </picture>
-<link media="(min-width: 800px)"/>
-<style media="(min-width: 800px)"></style>
+<link media="screen"/>
+<link media="tv"/>
+<style media="print"></style>
 ```

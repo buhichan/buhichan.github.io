@@ -13,6 +13,24 @@
     box-sizing: border-box;
 }
 
+a {
+    word-break: break-all;
+}
+
+pre{
+    white-space: pre-wrap;
+    background: #000;
+    color: #80ff80;
+    padding: 15px;
+    border-radius: 10px;
+}
+
+code{
+    font-size: 12px;
+    font-family: Menlo, Monaco, 'Courier New', monospace;
+}
+
+
 header {
     position:fixed;
     left:0;
@@ -24,6 +42,53 @@ header {
     color: #fff;
     padding-left: 20px;
     z-index: 20;
+}
+
+iframe {
+    border: 1px dashed var(--primary-color);
+    box-shadow: none;
+    margin: 20px;
+}
+
+details {
+    border-left: 4px solid var(--primary-color);
+    padding: 0 20px;
+    margin: 20px 0;
+}
+
+details[open]>summary{
+    margin-bottom: 20px;
+}
+
+summary {
+    color: var(--primary-color);
+    outline: none;
+    cursor: pointer;
+}
+
+hr{
+    border: none;
+    background-image: linear-gradient(90deg, transparent 0%, var(--primary-color) 50%, transparent 100%);
+    height: 2px;
+    margin-block-start: 2em;
+    margin-block-end: 2em;
+}
+footer {
+    position: fixed;
+    bottom:0;
+    width:100vh;
+    opacity: 0;
+    padding: 20px;
+    text-align: center;
+}
+
+ul {
+    margin: 0;
+    padding-left: 30px;
+}
+
+ul>li {
+    list-style-image: radial-gradient(circle, var(--primary-color) 0%, var(--primary-color) 30%, transparent 35%);
 }
 
 #content{
@@ -42,19 +107,8 @@ header {
     width: var(--sidebar-width);
     height: 100vh;
 }
-
-footer {
-    position: fixed;
-    bottom:0;
-    width:100vh;
-    opacity: 0.1;
-}
-
-
-
-ul {
-    margin: 0;
-    padding-left: 30px;
+#sidebar-toggle{
+    display: none;
 }
 
 #sidebar li {
@@ -70,14 +124,34 @@ input {
 
 @media (max-width: 1068px){
     #sidebar {
-        position: relative;
-        width: 100vw;
-        height: auto;
-        /* display: none; */
+        position: fixed;
+        width: 80vw;
+        height: 100%;
+        left: -80vw;
+        z-index: 40;
+        transition: left .2s ease-in;
+        background: #fff;
+        box-shadow: 4px 3px 11px 0px #2223
+    }
+    #sidebar:focus-within{
+        left: 0;
+    }
+    #sidebar-toggle{
+        background-image: linear-gradient(180deg, #fff 2px, transparent 2px);
+        background-size: 100% 34%;
+        background-position: 0 15%;
+        position: fixed;
+        top: calc( var(--topbar-height) / 2 );
+        right: 20px;
+        display: block;
+        width: 20px;
+        height: 20px;
+        transform: translate(0, -50%);
+        cursor: pointer;
     }
     #content {
         /* position: fixed; */
-        padding: 0 0px;
+        padding: 20px;
         left: 0;
         margin-left: 0;
         margin-top: 0;

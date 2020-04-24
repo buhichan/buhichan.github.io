@@ -36,6 +36,7 @@ function App(){
         </header>
         <section id="sidebar">
             {renderMenu(routes)}
+            <div id="sidebar-toggle" tabIndex={1}></div>
         </section>
         <section id="content">
             {renderRoutes(routes)}

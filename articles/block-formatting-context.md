@@ -1,0 +1,80 @@
+# Block Formatting Context (块格式化上下文)
+
+几句话讲清楚块格式化上下文
+
+## 一句话
+
+块格式化上下文就是一个计算块元素布局的上下文, 一个BFC内的block, float, clear之间参与同一个布局计算, 而不会与此BFC之外的元素参与同一个布局计算.
+
+## 衍生知识点
+
+### Margin Collapsing (外边距折叠)
+<details>
+	<summary>在某些情况下, BFC中的各种margin会合并, 保留参与合并的margin中的最大者, 最常见的是相邻block元素, 不过也有其他情况</summary>
+
+#### 情况1
+ 在block direction上相邻的block, margin-bottom和margin-top会合并掉, 取两者中较大的那一个
+
+- 因为是最常见的情况所以就不举例了
+
+#### 情况2
+ 如果子元素和父元素之间没有任何的内容阻挡两者的margin-top, 则子元素的margin-block-start(margin-top) 跟父元素的margin-block-start(margin-top)合并,
+- 可以阻挡的东西包括border, padding, inline内容(例如文本), 创建BFC, clear属性
+- 例如下面的.b3
+
+<iframe src="data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8bWV0YSBodHRwLWVxdWl2PSJYLVVBLUNvbXBhdGlibGUiIGNvbnRlbnQ9ImllPWVkZ2UiPgogICAgPHRpdGxlPkRvY3VtZW50PC90aXRsZT4KPC9oZWFkPgo8c3R5bGU+CiAgICBib2R5IHsKICAgICAgICBtYXJnaW46IDA7CiAgICB9CiAgICAuY29uewogICAgfQogICAgLmIxewogICAgICAgIGJhY2tncm91bmQ6ICNmOTk7CiAgICAgICAgd2lkdGg6IDIwMHB4OwogICAgfQogICAgLmIyewogICAgICAgIGJhY2tncm91bmQ6ICM5Zjk7CiAgICAgICAgd2lkdGg6IDE1MHB4OwogICAgICAgIHBhZGRpbmctdG9wOiAwOwogICAgfQogICAgLmIzIHsKICAgICAgICBtYXJnaW4tdG9wOiAzMHB4OwogICAgICAgIGJhY2tncm91bmQ6ICM5OWY7CiAgICAgICAgd2lkdGg6IDE1MHB4OwogICAgfQo8L3N0eWxlPgo8Ym9keT4KICAgIDxkaXYgY2xhc3M9ImNvbiI+CiAgICAgICA8ZGl2IGNsYXNzPSJiMSI+MTwvZGl2PgogICAgICAgPGRpdiBjbGFzcz0iYjIiPgogICAgICAgICAgICA8ZGl2IGNsYXNzPSJiMyI+MzwvZGl2PgogICAgICAgPC9kaXY+CiAgICA8L2Rpdj4KICAgICAgICAgICAgCjwvYm9keT4KPC9odG1sPg==" ></iframe>
+
+#### 情况2.5 
+如果子元素和父元素之间没有任何内容阻挡它们两者之间的margin-bottom, 则margin-bottom 合并
+- 可以阻挡的东西包括border, padding, inline内容(例如文本), height, min-height, max-height
+
+#### 情况3 
+如果一个元素自身的margin-top和margin-bottom之间没有任何阻挡, 则其自身的这2个margin合并
+- 可以阻挡的东西包括border, padding, inline内容(例如文本), 创建BFC(display: flow-root), height, min-height
+- 例如下面的.b1
+
+<iframe src="data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8bWV0YSBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLCBpbml0aWFsLXNjYWxlPTEuMCI+CiAgICA8bWV0YSBodHRwLWVxdWl2PSJYLVVBLUNvbXBhdGlibGUiIGNvbnRlbnQ9ImllPWVkZ2UiPgogICAgPHRpdGxlPlRlc3Q8L3RpdGxlPgo8L2hlYWQ+CjxzdHlsZT4KICAgIGJvZHkgewogICAgICAgIG1hcmdpbjogMDsKICAgIH0KICAgIC5jb257CiAgICB9CiAgICAuYjF7CiAgICAgICAgYmFja2dyb3VuZDogI2Y5OTsKICAgICAgICB3aWR0aDogMjAwcHg7CiAgICAgICAgbWFyZ2luLXRvcDogMTVweDsKICAgICAgICBtYXJnaW4tYm90dG9tOiAyMHB4OwogICAgfQogICAgLmIyewogICAgICAgIGJhY2tncm91bmQ6ICM5Zjk7CiAgICAgICAgd2lkdGg6IDE1MHB4OwogICAgfQo8L3N0eWxlPgo8Ym9keT4KICAgIDxkaXYgY2xhc3M9ImNvbiI+CiAgICAgICA8ZGl2IGNsYXNzPSJiMSI+PC9kaXY+CiAgICAgICA8ZGl2IGNsYXNzPSJiMiI+MjwvZGl2PgogICAgPC9kaXY+CiAgICAgICAgICAgIAo8L2JvZHk+CjwvaHRtbD4=" ></iframe>
+
+#### 特殊规则:
+	1. 上述4条可以多条同时生效
+	2. 即使被collapse的margin是0也可生效
+		- 所以没有margin的block的子block如果有大于0的margin-top, 则会使这个margin为0的block出现一个边距, 虽然它边距仍然是0, 也可以理解为子元素的margin超出了父元素的content-box
+	3. 当有负数的margin参与合并的时候, 结果等于最大的非负数减去最小(绝对值大)的负数
+
+</details>
+
+
+
+
+---
+
+## 如何产生BFC?
+
+这里指的都是元素自身的后代元素属于新产生的这个BFC, 例如float, float元素自身仍然属于其父级BFC, 
+
+<details>
+	<summary>Float和overflow:scroll产生新BFC的例子</summary>
+
+- 1和2为一个BFC
+- 3和4为一个BFC
+- html为根BFC
+- 5和文本节点构成的匿名块“1”为一个BFC
+
+
+
+<iframe src="data:text/html;base64,PCFET0NUWVBFIGh0bWw+CjxodG1sIGxhbmc9ImVuIj4KPGhlYWQ+CiAgICA8bWV0YSBjaGFyc2V0PSJVVEYtOCI+CiAgICA8dGl0bGU+VGVzdDwvdGl0bGU+CjwvaGVhZD4KPHN0eWxlPgogICAgYm9keSB7CiAgICAgICAgbWFyZ2luOiAwOwogICAgfQogICAgLmNvbjF7CiAgICAgICAgYmFja2dyb3VuZDogIzlmOTsKICAgICAgICB3aWR0aDogMTAwJTsKICAgICAgICBvdmVyZmxvdzogc2Nyb2xsOwogICAgfQogICAgLmNvbjJ7CiAgICAgICAgYmFja2dyb3VuZDogIzk5ZjsKICAgICAgICB3aWR0aDogMTAwJTsKICAgIH0KICAgIC5iMXsKICAgICAgICBiYWNrZ3JvdW5kOiAjZjk5OwogICAgICAgIGZsb2F0OiBsZWZ0OwogICAgICAgIHdpZHRoOiA1MHB4OwogICAgICAgIGhlaWdodDogNjBweDsKICAgIH0KICAgIC5iM3sKICAgICAgICBiYWNrZ3JvdW5kOiAjZjk5OwogICAgICAgIGZsb2F0OiBsZWZ0OwogICAgICAgIGhlaWdodDogNDBweDsKICAgICAgICB3aWR0aDogNDBweDsKICAgIH0KPC9zdHlsZT4KPGJvZHk+CiAgICA8ZGl2IGNsYXNzPSJjb24xIj4KICAgICAgIDxkaXYgY2xhc3M9ImIxIj4KICAgICAgICAxCiAgICAgICAgPGRpdiBzdHlsZT0iZmxvYXQ6cmlnaHQiPjU8L2Rpdj4KICAgICAgICA8L2Rpdj4KICAgICAgIDxkaXYgY2xhc3M9ImIyIj4yPC9kaXY+CiAgICA8L2Rpdj4KICAgIDxkaXYgY2xhc3M9ImNvbjIiPgogICAgICAgIDxkaXYgY2xhc3M9ImIzIj4zPC9kaXY+CiAgICAgICAgPGRpdiBjbGFzcz0iYjQiPjQ8L2Rpdj4KICAgIDwvZGl2PgogICAgICAgICAgICAKPC9ib2R5Pgo8L2h0bWw+"" ></iframe>
+
+</details>
+
+
+下面这个名单具有时效性, 最新列表需要参见 https://developer.mozilla.org/en-US/docs/Web/Guide/CSS/Block_formatting_context
+
+1. 是 html 元素的时候
+2. float
+3. position: absolute
+4. position: fixed
+6. 父元素的display属性值为flex|inline-flex|grid，自身产生BFC
+7. display: block && overflow !== visible && overflow !== clip
+8. table-cell
+9. contain: paint
+10. 其他情况, 因为不常用所以省略

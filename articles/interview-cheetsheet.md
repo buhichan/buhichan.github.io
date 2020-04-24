@@ -1,14 +1,17 @@
 
 # 2019
 
-## OSI Model
-    - Layer 1: Physical Layer 物理层    
-    - Layer 2: Data Link Layer 数据链路层
-    - Layer 3: Network Layer 网络层
-    - Layer 4: Transport Layer 传输层
-    - Layer 5: Session Layer 会话层
-    - Layer 6: Presentation Layer 表达层
-    - Layer 7: Application Layer 应用层
+## OSI Model / TCP/IP Model
+
+- Layer 1: Physical Layer 物理层
+- Layer 2: Data Link Layer 数据链路层
+- Layer 3: Network Layer 网络层 
+- Layer 4: Transport Layer 传输层 
+- Layer 5: Session Layer 会话层
+- Layer 6: Presentation Layer 表达层 
+- Layer 7: Application Layer 应用层
+
+TCP/IP模型中, 5~7层被省略合称为应用层, 因此只有5层
 
 ## 浏览器输入一个URL回车之后发生了什么
 

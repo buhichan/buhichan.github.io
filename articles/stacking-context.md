@@ -3,6 +3,7 @@
 几句话讲清楚层叠上下文
 
 ## 一句话
+
 层叠上下文是用来比较z轴次序的概念, 只有在同一个层叠上下文中的元素才能直接决定z轴次序, 否则需要递归比较其父级层叠上下文的z轴次序
 
 ---
@@ -69,5 +70,5 @@ function compareZIndex(a, b){
 10. transform, filter, perspective, clip-path, mask/mask-image/mask-border != "none"
 11. isolation = "isolate"
 12. will-change的值为任何可能产生堆叠上下文的属性名称
-13. contain = "layout" | "paint"
+13. contain = paint
 

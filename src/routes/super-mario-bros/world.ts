@@ -24,10 +24,10 @@ function collisionDetection(characters:MapObject[], objects:MapObject[]):Collisi
                 )
             })
 
-            if(currentStandOnObject){
-                char.speed.y = 0
-                char.position.y = currentStandOnObject.position.y + currentStandOnObject.sizey
-            }
+            // if(currentStandOnObject){
+            //     char.speed.y = 0
+            //     char.position.y = currentStandOnObject.position.y + currentStandOnObject.sizey
+            // }
         }else if(char.speed.y > 0){
 
         }else{

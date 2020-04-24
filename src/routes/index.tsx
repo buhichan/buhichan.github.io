@@ -1,6 +1,6 @@
 import * as React from "react"
-import {ArticleList} from "./article/article-list"
 import { Anchor } from "../services/router";
+import { renderArticles } from "./article/article-list";
 
 export default function (){
     return <>
@@ -10,13 +10,11 @@ export default function (){
         </section>
         <section>
             <h2>一些想法</h2>
-            <ul>
+            <div>
                 {
-                    Object.keys(ArticleList).map(x=>{
-                        return <li key={x}><Anchor href={"/article?article="+x}>{ArticleList[x]}</Anchor></li>
-                    })
+                    renderArticles()
                 }
-            </ul>
+            </div>
         </section>
         <section>
             <h2>一些轮子</h2>

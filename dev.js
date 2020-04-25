@@ -65,7 +65,7 @@ const compiler = webpack({
             apply(compiler) {
                 compiler.hooks.compilation.tap("Create article list", compilation => {
                     compilation.hooks.htmlWebpackPluginBeforeHtmlGeneration.tap("Create article list", ({assets})=>{
-                        assets.js.push("/articlelist.js")
+                        assets.js.push(compiler.options.output.publicPath+"articlelist.js")
                     })
                     compilation.hooks.additionalAssets.tapPromise("Create article list", async () => {
                         const fsReaddir = promisify(fs.readdir)

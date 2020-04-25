@@ -22,7 +22,15 @@ export function renderArticles(articles: Articles = articleList, path: string[] 
                 .sort((t1, t2) => {
                     let stat1 = articles[t1]
                     let stat2 = articles[t2]
-                    return ((stat2.modifyTime || 0) as number) - ((stat1.modifyTime || 0) as number)
+                    let order1 = ((stat1.modifyTime || 0) as number)
+                    let order2 = ((stat2.modifyTime || 0) as number)
+                    if(t1.match(/\d+\./)){
+                        order1 = Number.MAX_SAFE_INTEGER - Number(t1.split(".")[0])
+                    }
+                    if(t2.match(/\d+\./)){
+                        order2 = Number.MAX_SAFE_INTEGER - Number(t2.split(".")[0])
+                    }
+                    return order2 - order1
                 })
                 .map(title => {
                     const maybeChildren = articles[title]

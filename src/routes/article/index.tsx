@@ -12,7 +12,7 @@ export default function Article(){
         if(!name){
             return ""
         }
-        return fetch("/articles/"+name+".md").then(x=>x.text())
+        return fetch("/articles/"+name).then(x=>x.text()).catch(()=>"")
     },[name])
     if(!markdown){
         return renderArticles()

@@ -1,7 +1,10 @@
 import * as React from "react";
 import { Subject } from "rxjs";
 
-const canvas = document.createElement("canvas")
+const canvas = document.createElement("canvas");
+
+const content = document.querySelector("#content")
+content && content.append(canvas)
 
 export function getPixelSampleMatrix(file:Blob, pixelSize:number){
     const image = document.createElement("img")
@@ -28,8 +31,6 @@ export function getPixelSampleMatrix(file:Blob, pixelSize:number){
         }
     })
 }
-
-document.body.append(canvas)
 
 type Props = {
     file:File
@@ -178,8 +179,8 @@ function getFrames(file:File, commands:string[]){
     readFile(file).then((data)=>{
         var testData = new Uint8Array(data)
         let ffmpeg = 
-            subtype === 'webm' ? new Worker("nm/ffmpeg.js/ffmpeg-worker-webm.js") : 
-            subtype === 'mp4' ? new Worker("nm/ffmpeg.js/ffmpeg-worker-mp4.js") : 
+            subtype === 'webm' ? new Worker("assets/ffmpeg.js/ffmpeg-worker-webm.js") : 
+            subtype === 'mp4' ? new Worker("assets/ffmpeg.js/ffmpeg-worker-mp4.js") : 
             null
         if(!ffmpeg){
             return []

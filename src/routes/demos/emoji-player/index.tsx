@@ -4,9 +4,9 @@ import MoonphasePlayer from "./moonphase-player/moonphase-player";
 import VideoVisualizer from "./visualizer/visualizer";
 
 export default function EmojiPlayer(){
-    if(location.hostname === 'localhost'){
-        return <VideoVisualizer />
-    }
+    // if(location.hostname === 'localhost'){
+    //     return <VideoVisualizer />
+    // }
     const [file,setFile] = React.useState(null as null | File)
     React.useEffect(()=>{
         fetch("assets/big_buck_bunny.webm").then(x=>x.blob() as any).then(setFile)

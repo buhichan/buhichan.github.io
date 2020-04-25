@@ -26,6 +26,10 @@ export function useSearchParams(){
 export function Anchor(props:React.DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>){
     return <a {...props} onClick={(e)=>{
         e.preventDefault()
-        history.push(props.href)
+        if(props.href.startsWith("http")){
+            window.open(props.href, props.target || "_blank")
+        }else{
+            history.push(props.href)
+        }
     }}>{props.children}</a>
 }

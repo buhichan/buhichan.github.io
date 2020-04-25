@@ -3,6 +3,7 @@
         "moduleResolution": "node",
         "target": "esnext",
         "module": "ESNext",
+        "sourceMap": true,
         "lib": ["dom","scripthost","esnext.bigint"],
         "jsx": "react",
         "outDir": "build"

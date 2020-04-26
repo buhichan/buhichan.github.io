@@ -1,12 +1,7 @@
 import * as React from "react";
 import { Subject } from "rxjs";
 
-const canvas = document.createElement("canvas");
-
-const content = document.querySelector("#content")
-content && content.append(canvas)
-
-export function getPixelSampleMatrix(file:Blob, pixelSize:number){
+export function getPixelSampleMatrix(file:Blob, pixelSize:number, canvas: HTMLCanvasElement){
     const image = document.createElement("img")
     image.src = URL.createObjectURL(file)
     return new Promise<Uint8ClampedArray[][]>(resolve=>{
@@ -55,6 +50,8 @@ export default function MoonphasePlayer (props:Props){
         ref.current && (ref.current.innerHTML = str)
     }
 
+    const canvasRef = React.useRef(null)
+
     React.useEffect(()=>{
         if(!props.file || !command){
             return
@@ -94,7 +91,7 @@ export default function MoonphasePlayer (props:Props){
             for(let i in files){
                 const file = files[i]
                 const blob = new Blob([file.data],{type:"image/jpeg"})
-                const pixels = await getPixelSampleMatrix(blob,20)
+                const pixels = await getPixelSampleMatrix(blob,20, canvasRef.current)
                 frames.push(pixels.map(row=>{
                     return row.map(pixel=>{
                         const brightness = (0.2126*pixel[0]/255 + 0.7152*pixel[1]/255 + 0.0722*pixel[2]/255) * 2
@@ -157,6 +154,7 @@ export default function MoonphasePlayer (props:Props){
         <div ref={ref} style={{whiteSpace:"pre-wrap"}}>
 
         </div>
+        <canvas ref={canvasRef} />
     </div>
 }
 

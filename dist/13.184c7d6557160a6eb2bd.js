@@ -1,0 +1,2 @@
+(window.webpackJsonp=window.webpackJsonp||[]).push([[13],{"./src/routes/demos/index.tsx":function(e,n,t){"use strict";t.r(n),t.d(n,"default",function(){return u});var r=t("react");function u(e){return r.createElement("div",null,"一些",r.createElement("del",null,"项目"),"轮子的Demo")}}}]);
+//# sourceMappingURL=13.184c7d6557160a6eb2bd.js.map

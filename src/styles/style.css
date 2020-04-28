@@ -122,6 +122,11 @@ input {
     min-width: 100px;
 }
 
+.markdown img{
+    max-width: 60vw;
+    height: auto;
+}
+
 @media (max-width: 1068px){
     #sidebar {
         position: fixed;

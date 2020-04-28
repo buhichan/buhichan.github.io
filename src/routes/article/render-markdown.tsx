@@ -12,7 +12,7 @@ export default function RenderMarkdown ({src}:Props){
             setRendered(marked(src))
         }
     },[src])
-    return <div dangerouslySetInnerHTML={{__html:rendered}}>
+    return <div className="markdown" dangerouslySetInnerHTML={{__html:rendered}}>
     
     </div>
 }

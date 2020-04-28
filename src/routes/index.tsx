@@ -92,3 +92,24 @@ export default function (){
         </section>
     </>
 }
+
+
+class Foo {
+    lock
+    isDirty(){
+        this.lock.lock()
+        //.......
+        let res = 1===1
+        this.lock.release()
+        return res
+    }
+    update(){
+        this.lock.lock()
+        //.......
+        if(this.isDirty()){
+            //......
+        }
+        //.......
+        this.lock.release()
+    }
+}

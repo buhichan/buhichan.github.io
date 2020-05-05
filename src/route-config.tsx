@@ -47,11 +47,6 @@ export const routes:IRoute[] = [
                 name:"EmojiPlayer",
                 component:React.lazy(()=>import("./routes/demos/emoji-player")),
             },
-            // {
-            //     path:"/css-experiments",
-            //     name:"CSS实验",
-            //     component:React.lazy(()=>import("./routes/demos/css-experiments")),
-            // },
             {
                 path:"/schema-form-demo",
                 name:"FormDemo",

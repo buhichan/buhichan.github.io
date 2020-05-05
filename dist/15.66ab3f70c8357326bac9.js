@@ -1,2 +1,0 @@
-(window.webpackJsonp=window.webpackJsonp||[]).push([[15],{"./src/routes/fractal/index.tsx":function(n,e,r){"use strict";r.r(e),r.d(e,"default",function(){return o});var t=r("react"),c=r("./src/routes/article/render-markdown.tsx");const s="\n# 一些webgl2的想法💡\n\n如果浏览器不支持webgl2, 需要换chrome.\n\n---\n\n半功利性的学图形和glsl, 才发现线代实在是太重要了, 一些上学的时候搞不懂的概念, 开始逐渐了解了有什么用途.\n";function o(n){return t.createElement(c.a,{src:s})}}}]);
-//# sourceMappingURL=15.66ab3f70c8357326bac9.js.map

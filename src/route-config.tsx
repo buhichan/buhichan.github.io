@@ -38,6 +38,11 @@ export const routes:IRoute[] = [
         component:React.lazy(()=>import("./routes/demos")),
         children:[
             {
+                path:"/sometest",
+                name:"Some test",
+                component:React.lazy(()=>import("./routes/demos/sometest")),
+            },
+            {
                 path:"/moonphase-painter",
                 name:"月球文生成器",
                 component:React.lazy(()=>import("./routes/demos/moonphase-painter")),

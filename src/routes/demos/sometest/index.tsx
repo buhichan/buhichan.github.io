@@ -4,20 +4,25 @@ export default function SomeTest(){
 
     const [text,setText] = React.useState("")
 
+    const divRef = React.useRef(null)
+
     React.useEffect(()=>{
-        const onResize = ()=>{
-            setText(`window.innerWidth: ${window.innerWidth}\n document.body.clientHeight: ${document.body.clientHeight}`)
+        const onFocus = ()=>{
+            setText(`window.innerWidth: ${window.innerWidth}\n document.body.clientHeight: ${document.body.clientHeight} \n `)
         }
-        window.addEventListener("resize",onResize)
+        const el = divRef.current as HTMLDivElement
+        el.addEventListener("focus",onFocus)
         return ()=>{
-            window.removeEventListener("resize", onResize)
+            el.removeEventListener("focus", onFocus)
         }
     },[])
 
     return <div>
         <pre>Info: {text}</pre>
-        <div contentEditable>
-            114514
-        </div>
+        <pre >
+            <code contentEditable ref={divRef}>
+                114514
+            </code>
+        </pre>
     </div>
 }

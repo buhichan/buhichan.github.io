@@ -391,6 +391,7 @@ export default function WebglRenderer(props: Props) {
           一些看似复杂其实跟Hello World一样简单的东西, 没有用框架,
           纯粹是为了学习webgl的API做的轮子.
           编辑下面文本框中的代码可以直接更新图像.
+          需要浏览器支持webgl2才能运行.
         </p>
         <div
           onChange={(e) => {
@@ -463,12 +464,13 @@ export default function WebglRenderer(props: Props) {
             contentEditable
             onFocus={(e) => {}}
             onInput={(e) => {
-              if (e.target["timer"]) {
-                clearTimeout(e.target["timer"]);
-                e.target["timer"] = null;
+              const el = e.currentTarget as HTMLElement
+              if (el.dataset.timer) {
+                clearTimeout(Number(el.dataset.timer));
+                delete el.dataset.timer
               } else {
-                e.target["timer"] = setTimeout(() => {
-                  setShader(e.currentTarget.innerText);
+                el.dataset.timer = ""+setTimeout(() => {
+                  setShader(el.innerText);
                 }, 2000);
               }
             }}

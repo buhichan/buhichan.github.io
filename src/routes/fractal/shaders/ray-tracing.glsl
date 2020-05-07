@@ -53,29 +53,29 @@ vec3 phongModel(vec3 materialColor, vec3 normal, vec3 reflectPoint, vec3 reflect
 }
 
 // sphere DE
-// float distanceEstimator(vec3 point){
-//     vec3 center = vec3(0.0,0.0,0.0);
-//     float dist = length(point - center);
-//     float radius = 10.0;
-//     float theta =  atan(point.x, point.y);
-//     float phi = atan(point.z, length(point.xy));
-//     return dist - radius;
-// }
+float distanceEstimator(vec3 point){
+    vec3 center = vec3(0.0,0.0,0.0);
+    float dist = length(point - center);
+    // float theta =  atan(point.x, point.y);
+    // float phi = atan(point.z, length(point.xy));
+    float radius = 10.0 + 0.1 * noise(point.xy) + 0.1 * noise(point.yz) + 0.1 * noise(point.xz);
+    return dist - radius;
+}
 
 // cube DE
 // float distanceEstimator(vec3 point){
-//     float radius = 5.0;
+//     float radius = 5.0 + 0.1 * noise(point.xy);
 //     // return ;
 //     vec3 dist = max(abs(point) - radius, 0.0);
 //     return length(dist);
 // }
 
 // cylinder DE
-float distanceEstimator(vec3 point){
-    float d1 = max(0.0, length(point.xy) - 5.0);
-    float d2 = max(0.0, abs(point.z) - 5.0);
-    return length(vec2(d1,d2));
-}
+// float distanceEstimator(vec3 point){
+//     float d1 = max(0.0, length(point.xy) - 5.0);
+//     float d2 = max(0.0, abs(point.z) - 5.0);
+//     return length(vec2(d1,d2));
+// }
 
 
 const int MAX_LOOP = 150;

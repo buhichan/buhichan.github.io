@@ -34,6 +34,9 @@ export function renderArticles(articles: Articles = articleList, path: string[] 
                 })
                 .map(title => {
                     const maybeChildren = articles[title]
+                    if(title.startsWith("_")){
+                        return null
+                    }
                     return (
                         <li key={title}>
                             {!("modifyTime" in maybeChildren) ? (

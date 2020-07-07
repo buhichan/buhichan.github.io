@@ -20,6 +20,7 @@ Redux是react的de facto的状态管理库, 那rxjs也可以用来管理状态, 
     - 代码组织方法
         - group code by kind, not by business logic
         - 就像你有两辆车, 但是你把轮子跟轮子(action)放在一个房间, 底盘跟底盘(reducer)放在另一个房间, 方向盘又放另外的房间
+        - 有一些解决办法, 比如动态注册reducer, 把reducer跟相关业务放在一起, 但是这不是redux的本意
 - Rxjs
     - 概念
         - behavior subject
@@ -31,7 +32,7 @@ Redux是react的de facto的状态管理库, 那rxjs也可以用来管理状态, 
         - 不再需要引入diff逻辑, 只要监听函数被触发, 直接渲染就可以了
         - 因为不需要diff所以也不需要引入immutable
     - 各个组件和服务的状态分离
-        - 基本不能time travel.
+        - 要实现time travel比较困难, 需要记录每一步操作了哪个behavior subject.
     - 代码组织方法
         - group code by business logic
         - 属于同一辆车的零件放一起

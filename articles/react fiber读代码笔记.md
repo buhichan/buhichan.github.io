@@ -36,6 +36,7 @@
 - 什么是effectTree
     - 就是由reconcile这个过程得到的, 由fiber上的firstEffect开始, nextEffect构成的树, 表示应该执行的dom操作, 但是其实并不真的执行, 而是由commitEffect完成实际的执行
 - 什么是passiveEffect
+    - 
 
 
 ## ReactDOM.render中发生了什么

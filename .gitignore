@@ -1,6 +1,6 @@
 node_modules
 yarn-error.log
-**/*/target/release
-**/*/target/debug
+**/*/target/rls/release
+**/*/target/rls/debug
 **/*/target/wasm32-unknown-unknown
 articles/_*

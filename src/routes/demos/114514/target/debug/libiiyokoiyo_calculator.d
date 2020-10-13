@@ -1,0 +1,1 @@
+/Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/target/debug/libiiyokoiyo_calculator.rlib: /Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/src/iiyokoiyo_calculator.rs /Users/buhi/Documents/js_projects/buhichan.github.io/src/routes/demos/114514/src/lib.rs

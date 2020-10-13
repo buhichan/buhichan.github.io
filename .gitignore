@@ -3,4 +3,4 @@ yarn-error.log
 **/*/target/release
 **/*/target/debug
 **/*/target/wasm32-unknown-unknown
-articles/_面试
+articles/_*

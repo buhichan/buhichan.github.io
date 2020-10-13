@@ -37,3 +37,34 @@ Redux是react的de facto的状态管理库, 那rxjs也可以用来管理状态, 
         - group code by business logic
         - 属于同一辆车的零件放一起
     
+# 为什么我要用rxjs代替redux来做状态管理
+
+很多人(包括我)对redux的用法, 就跟设计者的想法不一致:
+- 设计者的思路是
+```js
+function reducerA(state, action){
+    switch (action.type){
+        case "A":
+            state = doB(state,action);
+            return doA(state,action);
+        case "C":
+        case "B":
+            return doB(state,action);
+    }
+}
+```
+也就是说, action与reducer是多对一的关系.
+- 很多人(包括我)的用法是:
+```js
+const childReducers = {
+    A:doA,
+    B:doB,
+    C:doC,
+}
+function reducer(state, action){
+    return childReducer[action.type](state, action)
+}
+```
+action与reducer基本上就是一对一. 如果是这样那么是可以进一步简化的. 
+我的简化办法就是action替换为subject, 而处理逻辑的reducer替换为subject的监听函数. 在中后台前端业务开发的前提下, 这样能提高手动撸代码的开发体验.
+其实怎么简化都无所谓的, 这个是整个开发体验中不重要的一部分, 这里只是其中一种办法.

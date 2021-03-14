@@ -152,11 +152,13 @@ export default function withCollabo<P extends IPeer, E extends Editor>(editor: E
                 }
             })
             if (currentState === PeerState.unknown) {
-                peer.sendTo({
-                    type: MessageType.Hello,
-                    version: docState.version,
-                    nodes: editor.children,
-                })
+                setTimeout(() => {
+                    peer.sendTo({
+                        type: MessageType.Hello,
+                        version: docState.version,
+                        nodes: editor.children,
+                    })
+                }, 500)
             }
         },
         removePeer(id) {

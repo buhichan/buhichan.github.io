@@ -33,13 +33,15 @@ export function Caret({ userInfo, isForward }: CursorRange) {
         ...cursorStyleBase,
         background: userInfo.color,
         color: "black",
-        left: isForward ? "100%" : "0%",
+        // left: isForward ? "100%" : "0%",
+        left: "0%",
     } as React.CSSProperties
     const caretStyles = {
         ...caretStyleBase,
         position: "relative",
         background: userInfo.color,
-        left: isForward ? "100%" : "0%",
+        // left: isForward ? "100%" : "0%",
+        left: "0%",
     } as React.CSSProperties
 
     caretStyles[isForward ? "bottom" : "top"] = 0

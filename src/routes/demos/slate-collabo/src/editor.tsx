@@ -15,9 +15,9 @@ import { ClientEventType, RoomInfo, UserInfo } from "./protocol"
 type Props = {}
 
 // "ws://158.247.213.142:9083/signal-server"
-// const connection = createClientConnection("ws://158.247.213.142:9083/signal-server")
+const connection = createClientConnection("ws://158.247.213.142:9083/signal-server")
 
-const connection = createClientConnection("ws://localhost:9083/signal-server")
+// const connection = createClientConnection("ws://localhost:9083/signal-server")
 
 export default function App() {
     return (

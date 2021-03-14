@@ -35,15 +35,20 @@
     "rehooker": "buhichan/rehooker",
     "rehooker-schema-form": "buhichan/rehooker-schema-form",
     "serve-static": "^1.14.1",
+    "slate": "^0.59.0",
+    "slate-history": "^0.59.0",
+    "slate-react": "^0.59.0",
     "source-map-loader": "^0.2.4",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^1.4.1",
     "three": "^0.104.0",
-    "typescript": "^3.8.3",
+    "typescript": "^4.2.3",
+    "use-suspendable": "^0.0.1",
     "webpack": "^4.31.0",
     "webpack-bundle-analyzer": "^3.4.1",
     "webpack-dev-middleware": "^3.7.0",
-    "webpack-hot-middleware": "^2.25.0"
+    "webpack-hot-middleware": "^2.25.0",
+    "webrtc-datachannel": "^0.2.2"
   },
   "scripts": {
     "dev": "NODE_ENV=development node dev.js",

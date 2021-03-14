@@ -1,10 +1,11 @@
 {
     "compilerOptions": {
         "moduleResolution": "node",
-        "target": "esnext",
+        "target": "ES6",
         "module": "ESNext",
         "sourceMap": true,
-        "lib": ["dom","scripthost","esnext.bigint"],
+        "allowSyntheticDefaultImports": true,
+        "lib": ["dom", "scripthost", "esnext.bigint"],
         "jsx": "react",
         "outDir": "build"
     },
